@@ -1,0 +1,3 @@
+[submodule "lib/Trajectory-Hotspots"]
+	path = lib/Trajectory-Hotspots
+	url = https://github.com/NHLStenden-ISAL/Trajectory_Hotspots.git
