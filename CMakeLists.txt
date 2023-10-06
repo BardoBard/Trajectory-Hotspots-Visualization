@@ -10,6 +10,9 @@ find_package(CGAL REQUIRED OPTIONAL_COMPONENTS Qt5)
 # Create a list of source files in the "Trajectory-Hotspots" directory
 file(
   GLOB_RECURSE cppfiles
+  ${CMAKE_CURRENT_SOURCE_DIR}/lib/Trajectory-Hotspots/Trajectory-Hotspots/**.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/lib/Trajectory-Hotspots/Trajectory-Hotspots/**.h
+  
   ${CMAKE_CURRENT_SOURCE_DIR}/Trajectory-Hotspots/**.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/Trajectory-Hotspots/**.h
 )
