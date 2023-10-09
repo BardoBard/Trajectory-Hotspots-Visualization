@@ -1,8 +1,8 @@
 # Trajectory-Hotspots-Visualization
 
-## Pull
+## Clone
 ```bash
-git clone --branch "master" "https://github.com/BardoBard/Trajectory-Hotspots-Visualization.git" "Visualization" --recursive-submodules
+git clone --recursive -j8 --branch "master" https://github.com/BardoBard/Trajectory-Hotspots-Visualization.git "Visualization"
 ```
 
 ## Dependencies
