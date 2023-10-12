@@ -1,0 +1,16 @@
+name: Build-Cmake
+on:
+  pull_request: {}
+jobs:
+  build-vcpkgs:
+    runs-on:
+      windows-latest
+      
+    steps:
+    - name: vcpkg build
+      uses: johnwason/vcpkg-action@v5
+      id: vcpkg
+      with:
+        pkgs: opengl32 cgal qt
+        triplet: x64-windows-release
+        token: ${{ github.token }}
