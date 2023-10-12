@@ -7,10 +7,18 @@ jobs:
       windows-latest
       
     steps:
-    - name: vcpkg build
+    - name: vcpkg build opengl
       uses: johnwason/vcpkg-action@v5
-      id: vcpkg
+      id: vcpkg-opengl
       with:
-        pkgs: opengl cgal qt
+        pkgs: opengl
+        triplet: x64-windows-release
+        token: ${{ github.token }}
+        
+    - name: vcpkg build opengl
+      uses: johnwason/vcpkg-action@v5
+      id: vcpkg-cgal
+      with:
+        pkgs: cgal
         triplet: x64-windows-release
         token: ${{ github.token }}
