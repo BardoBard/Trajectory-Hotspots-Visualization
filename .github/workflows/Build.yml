@@ -11,6 +11,6 @@ jobs:
       uses: johnwason/vcpkg-action@v5
       id: vcpkg
       with:
-        pkgs: opengl32 cgal qt
+        pkgs: opengl cgal qt
         triplet: x64-windows-release
         token: ${{ github.token }}
