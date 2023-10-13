@@ -7,17 +7,10 @@ jobs:
       windows-latest
       
     steps:
-    - name: vcpkg build cgal
+    - name: vcpkg build cgal qt
       uses: johnwason/vcpkg-action@v5
-      id: vcpkg-cgal
+      id: vcpkg
       with:
-        pkgs: cgal
-        triplet: x64-windows-release
-        token: ${{ github.token }}
-    - name: vcpkg build qt
-      uses: johnwason/vcpkg-action@v5
-      id: vcpkg-qt
-      with:
-        pkgs: qt
+        pkgs: cgal qt
         triplet: x64-windows-release
         token: ${{ github.token }}
