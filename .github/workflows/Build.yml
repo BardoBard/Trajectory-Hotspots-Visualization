@@ -7,10 +7,9 @@ jobs:
       windows-latest
       
     steps:
-    - name: vcpkg build cgal qt
+    - name: vcpkg build cgal qt opengl
       uses: johnwason/vcpkg-action@v5
       id: vcpkg
       with:
-        pkgs: cgal qt
-        triplet: x64-windows-release
+        pkgs: cgal qt opengl
         token: ${{ github.token }}
