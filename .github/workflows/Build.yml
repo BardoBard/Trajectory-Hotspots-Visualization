@@ -14,3 +14,10 @@ jobs:
         pkgs: cgal
         triplet: x64-windows-release
         token: ${{ github.token }}
+    - name: vcpkg build qt
+      uses: johnwason/vcpkg-action@v5
+      id: vcpkg-qt
+      with:
+        pkgs: qt
+        triplet: x64-windows-release
+        token: ${{ github.token }}
