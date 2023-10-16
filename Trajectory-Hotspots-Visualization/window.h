@@ -14,8 +14,8 @@ class window : public CGAL::Basic_viewer_qt
 
 private:
 	std::vector<Vec2> trajectory_points_{};
-	cgal_point2d vec2_to_point(const Vec2& vec) const;
-	cgal_point2d vec2_to_point(const float x, const float y) const;
+	[[nodiscard]] cgal_point2d vec2_to_point(const Vec2& vec) const;
+	[[nodiscard]] cgal_point2d vec2_to_point(const float x, const float y) const;
 	bool text_visible_{true};
 
 public:
@@ -33,25 +33,13 @@ public:
 	{
 	}
 
-	virtual void moveEvent(QMoveEvent* event) override
+	void moveEvent(QMoveEvent* event) override;
+
+	void mousePressEvent(QMouseEvent* e) override
 	{
-		switch (event->type())
-		{
-		case QEvent::Scroll:
-			base::moveEvent(event);
-			break;
-		default:
-			break;
-		}
 	}
 
-	virtual void mousePressEvent(QMouseEvent* e) override
-	{
-		//look where mouse dragged
-		// const auto p = pixel_co(e->pos().x(), e->pos().y());
-	}
-
-	virtual void mouseDoubleClickEvent(QMouseEvent*) override
+	void mouseDoubleClickEvent(QMouseEvent*) override
 	{
 	}
 

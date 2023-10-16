@@ -10,6 +10,18 @@ cgal_point2d window::vec2_to_point(const float x, const float y) const
 	return cgal_point2d(x, y);
 }
 
+void window::moveEvent(QMoveEvent* event)
+{
+	switch (event->type())
+	{
+	case QEvent::Scroll:
+		base::moveEvent(event);
+		break;
+	default:
+		break;
+	}
+}
+
 void window::keyPressEvent(QKeyEvent* e)
 {
 	//arrow keys
