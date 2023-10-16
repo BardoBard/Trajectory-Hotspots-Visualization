@@ -2,7 +2,8 @@
 // Created by Bardio - NHL_STENDEN
 //
 #pragma once
-
+#include "CMakeFiles/Trajectory-Hotspots-Visualization.dir/cmake_pch.hxx"
+#include "Trajectory-Hotspots-Wrappers/drawable.h"
 #ifndef CGAL_USE_BASIC_VIEWER
 #define CGAL_USE_BASIC_VIEWER
 #endif
@@ -12,45 +13,55 @@ class window : public CGAL::Basic_viewer_qt
 	typedef Basic_viewer_qt base;
 
 private:
-	std::vector<Vec2>& vecs_;
+	std::vector<Vec2> trajectory_points_{};
+	cgal_point2d vec2_to_point(const Vec2& vec) const;
+	cgal_point2d vec2_to_point(const float x, const float y) const;
+	bool text_visible_{true};
 
 public:
-	window(QWidget* parent, std::vector<Vec2>& vec, const char* name = "Window"): base(parent, name), vecs_(vec)
+	window(QWidget* parent, const char* name = "Window"): base(parent, name)
 	{
 		base::set_draw_vertices(true);
-		compute_elements();
+		base::set_draw_edges(true);
+		base::set_draw_faces(true);
+		base::set_draw_rays(true);
+		base::set_draw_lines(true);
+		base::set_draw_text(text_visible_);
 	}
 
 	~window()
 	{
 	}
 
-	void compute_elements()
+	virtual void moveEvent(QMoveEvent* event) override
 	{
-		clear();
-		for (auto& vec : vecs_)
+		switch (event->type())
 		{
-			CGAL::Simple_cartesian<double>::Point_2 p(vec.x.get_value(), vec.y.get_value());
-			// auto p = CGAL::Point_3<CGAL::Epick>(vec.x.get_value(), vec.y.get_value(), 1);
-			add_point(p, CGAL::IO::red());
-		}
-	}
-
-	virtual void keyPressEvent(QKeyEvent* e)
-	{
-		//arrow keys
-		switch (e->key())
-		{
-		case Qt::Key_Right:
-		case Qt::Key_Up:
-		case Qt::Key_Down:
-		case Qt::Key_Left:
-			base::keyPressEvent(e);
+		case QEvent::Scroll:
+			base::moveEvent(event);
 			break;
 		default:
 			break;
 		}
-
-		// base::keyPressEvent(e);
 	}
+
+	virtual void mousePressEvent(QMouseEvent* e) override
+	{
+		//look where mouse dragged
+		// const auto p = pixel_co(e->pos().x(), e->pos().y());
+	}
+
+	virtual void mouseDoubleClickEvent(QMouseEvent*) override
+	{
+	}
+
+	void keyPressEvent(QKeyEvent* e) override;
+
+	void draw(const std::vector<drawable>& drawables);
+
+	void draw_line(const Segment& segment, const CGAL::IO::Color& color = CGAL::IO::blue());
+
+	void draw_line(const Vec2& lhs, const Vec2& rhs, const CGAL::IO::Color& color = CGAL::IO::blue());
+
+	void draw_point(const Vec2& point, const CGAL::IO::Color& color = CGAL::IO::red());
 };
