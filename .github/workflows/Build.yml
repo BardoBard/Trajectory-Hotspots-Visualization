@@ -12,5 +12,4 @@ jobs:
       id: vcpkg
       with:
         pkgs: opengl qt cgal
-        triplet: x64-windows-release
         token: ${{ github.token }}
