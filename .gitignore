@@ -1,1 +1,16 @@
-/build/
+#cmake build
+/build*/
+/release*/
+/cmake*/
+/cmake*/
+/out*/
+
+#packages ignore
+/packages/.*?/*
+
+#git
+.git
+
+#ide
+.vs
+.idea
