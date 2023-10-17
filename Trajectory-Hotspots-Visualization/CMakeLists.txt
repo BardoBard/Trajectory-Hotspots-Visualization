@@ -12,7 +12,7 @@ file(
   ${CMAKE_CURRENT_SOURCE_DIR}/*.h
 )
 
-set(TRAJECTORY_HOTSPOTS_DIR ${PACKAGE_DIR}/Trajectory_Hotspots/Trajectory_Hotspots/Trajectory_Hotspots)
+set(TRAJECTORY_HOTSPOTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../packages/Trajectory_Hotspots/Trajectory_Hotspots/Trajectory_Hotspots)
 
 file(GLOB packagefiles
   ${TRAJECTORY_HOTSPOTS_DIR}/aabb.cpp

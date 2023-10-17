@@ -31,6 +31,9 @@ void window::keyPressEvent(QKeyEvent* e)
 		base::set_draw_text(text_visible_ = !text_visible_);
 		redraw();
 		break;
+	case Qt::Key_Escape:
+		close();
+		break;
 	case Qt::Key_Right:
 	case Qt::Key_Up:
 	case Qt::Key_Down:
