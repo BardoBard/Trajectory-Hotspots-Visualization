@@ -18,3 +18,5 @@
 
 
 typedef CGAL::Simple_cartesian<double>::Point_2 cgal_point2d;
+
+constexpr auto inf = std::numeric_limits<float>::infinity();

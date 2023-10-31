@@ -21,7 +21,7 @@ file(GLOB packagefiles
   ${TRAJECTORY_HOTSPOTS_DIR}/segment_search_tree.cpp
   ${TRAJECTORY_HOTSPOTS_DIR}/trajectory.cpp
   ${TRAJECTORY_HOTSPOTS_DIR}/vec2.cpp
-  ${TRAJECTORY_HOTSPOTS_DIR}/trapeziodal_map.cpp
+  ${TRAJECTORY_HOTSPOTS_DIR}/trapezoidal_map.cpp
 )
 
 # Include lib

@@ -29,10 +29,6 @@ public:
 		base::set_draw_text(text_visible_);
 	}
 
-	~window()
-	{
-	}
-
 	void moveEvent(QMoveEvent* event) override;
 
 	void mousePressEvent(QMouseEvent* e) override
@@ -45,11 +41,10 @@ public:
 
 	void keyPressEvent(QKeyEvent* e) override;
 
-	void draw(const std::vector<drawable>& drawables);
+	void draw(const std::vector<class drawable>& drawables);
 
 	void draw_line(const Segment& segment, const CGAL::IO::Color& color = CGAL::IO::blue());
 
 	void draw_line(const Vec2& lhs, const Vec2& rhs, const CGAL::IO::Color& color = CGAL::IO::blue());
-
-	void draw_point(const Vec2& point, const CGAL::IO::Color& color = CGAL::IO::red());
+	void draw_point(const Vec2& point, const CGAL::IO::Color& color = CGAL::IO::red(), bool show_text = true);
 };

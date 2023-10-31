@@ -47,7 +47,7 @@ void window::keyPressEvent(QKeyEvent* e)
 	// base::keyPressEvent(e);
 }
 
-void window::draw(const std::vector<drawable>& drawables)
+void window::draw(const std::vector<class drawable>& drawables)
 {
 	for (const auto& drawable : drawables)
 		drawable.draw(*this);
@@ -65,10 +65,12 @@ void window::draw_line(const Vec2& lhs, const Vec2& rhs, const CGAL::IO::Color& 
 	base::add_segment(p1, p2, color);
 }
 
-void window::draw_point(const Vec2& point, const CGAL::IO::Color& color)
+void window::draw_point(const Vec2& point, const CGAL::IO::Color& color, const bool show_text)
 {
 	trajectory_points_.push_back(point);
 	const auto p = vec2_to_point(point);
-	base::add_text(p, "(" + std::to_string(int(p.x())) + "," + std::to_string(int(p.y())) + ")");
 	base::add_point(p, color);
+
+	if (show_text)
+		base::add_text(p, "(" + std::to_string(int(p.x())) + "," + std::to_string(int(p.y())) + ")");
 }
