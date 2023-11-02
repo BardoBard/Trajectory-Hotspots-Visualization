@@ -35,4 +35,4 @@ jobs:
           fi
           ./vcpkg/vcpkg install qt5 cgal opengl
           ./vcpkg/vcpkg integrate install
-        working-directory: vcpkg_installed
+        working-directory: /
