@@ -3,20 +3,20 @@
 //
 #pragma once
 
-#include "drawable.h"
+#include "../Interfaces/drawable.h"
 
 class window;
 
-class aabb : public AABB, drawable
+class drawable_aabb : public AABB, drawable
 {
 public:
 	using AABB::AABB;
 
-	explicit aabb(const AABB& aabb) : AABB(aabb)
+	explicit drawable_aabb(const AABB& aabb) : AABB(aabb)
 	{
 	}
 
-	explicit aabb(const AABB&& aabb) : AABB(aabb)
+	explicit drawable_aabb(const AABB&& aabb) : AABB(aabb)
 	{
 	}
 
@@ -26,5 +26,13 @@ public:
 		w.draw_line({max.x, min.y}, {max.x, max.y}, CGAL::IO::black());
 		w.draw_line({max.x, max.y}, {min.x, max.y}, CGAL::IO::black());
 		w.draw_line({min.x, max.y}, {min.x, min.y}, CGAL::IO::black());
-	};
+	}
+
+	drawable_aabb& operator+=(const drawable_aabb& aabb)
+	{
+		this->min = aabb.min;
+		this->max = aabb.max;
+
+		return *this;
+	}
 };

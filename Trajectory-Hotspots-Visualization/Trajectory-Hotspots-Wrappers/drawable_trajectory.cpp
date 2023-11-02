@@ -1,9 +1,9 @@
 //
 // Created by Bardio - NHL_STENDEN
 //
-#include "trajectory.h"
+#include "drawable_trajectory.h"
 
-void trajectory::draw(window& w) const {
+void drawable_trajectory::draw(window& w) const {
 	for (const Segment& s : get_ordered_trajectory_segments())
 	{
 		w.draw_point(s.start);
@@ -11,7 +11,7 @@ void trajectory::draw(window& w) const {
 		w.draw_line(s.start, s.end);
 	}
 }
-std::vector<Segment> trajectory::get_ordered_y_trajectory_segments() const
+std::vector<Segment> drawable_trajectory::get_ordered_y_trajectory_segments() const
 {
 	const std::vector<Segment>& ordered_segments = get_ordered_trajectory_segments();
 
@@ -27,7 +27,7 @@ std::vector<Segment> trajectory::get_ordered_y_trajectory_segments() const
 	return y_segments;
 }
 
-std::vector<Segment> trajectory::get_ordered_x_trajectory_segments() const
+std::vector<Segment> drawable_trajectory::get_ordered_x_trajectory_segments() const
 {
 	const std::vector<Segment>& ordered_segments = get_ordered_trajectory_segments();
 

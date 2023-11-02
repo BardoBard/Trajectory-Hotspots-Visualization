@@ -67,10 +67,15 @@ void window::draw_line(const Vec2& lhs, const Vec2& rhs, const CGAL::IO::Color& 
 
 void window::draw_point(const Vec2& point, const CGAL::IO::Color& color, const bool show_text)
 {
-	trajectory_points_.push_back(point);
 	const auto p = vec2_to_point(point);
 	base::add_point(p, color);
 
 	if (show_text)
-		base::add_text(p, "(" + std::to_string(int(p.x())) + "," + std::to_string(int(p.y())) + ")");
+		base::add_text(p, "(" + std::to_string(static_cast<int>(p.x())) + "," + std::to_string(static_cast<int>(p.y())) + ")");
+}
+
+void window::draw_text(const Vec2& point, const std::string& text)
+{
+	const auto p = vec2_to_point(point);
+	base::add_text(p, text);
 }

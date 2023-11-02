@@ -3,14 +3,13 @@
 //
 #pragma once
 
-#include "drawable.h"
+#include "../Interfaces/drawable.h"
 
-class trapezoidal_map : public Trapezoidal_Map, drawable
+class drawable_trapezoidal_map : public Trapezoidal_Map, drawable
 {
 private:
 	/// \brief breadth first search to find all leaf nodes
-	void breadth_first_search();
-	std::vector<const Trapezoidal_Leaf_Node*> leaf_nodes_{};
+	std::vector<const Trapezoidal_Leaf_Node*> get_leaf_nodes() const;
 
 public:
 	typedef Trapezoidal_Map base;
@@ -25,12 +24,4 @@ public:
 	/// \param w window to draw queried point on
 	/// \return leaf node
 	Trapezoidal_Leaf_Node* query_point(const Vec2& point, window& w) const;
-
-	//TODO: perhaps move this to ctor
-	/// \brief initializes the leaf nodes
-	void initialize_leaf_nodes() { breadth_first_search(); }
-
-	/// \brief returns the leaf nodes
-	/// \return leaf nodes
-	const std::vector<const Trapezoidal_Leaf_Node*>& get_leaf_nodes() { return leaf_nodes_; }
 };

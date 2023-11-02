@@ -3,21 +3,22 @@
 //
 #pragma once
 
-#include "aabb.h"
-#include "drawable.h"
+#include "drawable_aabb.h"
+#include "../Interfaces/drawable.h"
 
 class window;
 
-class trajectory : public Trajectory, drawable
+/// \brief 
+class drawable_trajectory : public Trajectory, drawable
 {
 public:
 	using Trajectory::Trajectory;
 
-	explicit trajectory(const Trajectory& t) : Trajectory(t)
+	explicit drawable_trajectory(const Trajectory& t) : Trajectory(t)
 	{
 	}
 
-	explicit trajectory(const Trajectory&& t) : Trajectory(t)
+	explicit drawable_trajectory(const Trajectory&& t) : Trajectory(t)
 	{
 	}
 
@@ -36,8 +37,8 @@ public:
 	/// \brief finds a hotspot of a contiguous trajectory with a fixed length
 	/// \param length length of the hotspot
 	/// \return hotspot of the trajectory with a fixed length
-	[[nodiscard]] aabb get_hotspot_fixed_length_contiguous(const float length) const
+	[[nodiscard]] drawable_aabb get_hotspot_fixed_length_contiguous(const float length) const
 	{
-		return aabb(Trajectory::get_hotspot_fixed_length_contiguous(length));
+		return drawable_aabb(Trajectory::get_hotspot_fixed_length_contiguous(length));
 	}
 };
