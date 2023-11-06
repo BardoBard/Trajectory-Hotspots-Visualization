@@ -7,35 +7,23 @@ find_package(OpenGL REQUIRED)
 
 # Recursive globbing to find all files in a directory
 file(
-        GLOB_RECURSE cppfiles
-        ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/*.h
-)
-# Trajectory Hotspots package
-set(TRAJECTORY_HOTSPOTS_DIR ${PACKAGE_DIR}/Trajectory_Hotspots/Trajectory_Hotspots/Trajectory_Hotspots)
-
-file(GLOB packagefiles
-        ${TRAJECTORY_HOTSPOTS_DIR}/aabb.cpp
-        ${TRAJECTORY_HOTSPOTS_DIR}/float.cpp
-        ${TRAJECTORY_HOTSPOTS_DIR}/segment.cpp
-        ${TRAJECTORY_HOTSPOTS_DIR}/segment_search_tree.cpp
-        ${TRAJECTORY_HOTSPOTS_DIR}/trajectory.cpp
-        ${TRAJECTORY_HOTSPOTS_DIR}/vec2.cpp
-        ${TRAJECTORY_HOTSPOTS_DIR}/trapezoidal_map.cpp
+    GLOB_RECURSE cppfiles
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.h
 )
 
 # Create the executable target and specify the source files
-add_executable(${PROJECT_NAME} ${cppfiles} ${packagefiles})
+add_executable(${PROJECT_NAME} ${cppfiles} ${TRAJECTORY_HOTSPOTS_PACKAGE_CPP_FILES})
 
 # Create the library target and specify the source files
-add_library(${PROJECT_NAME}_lib ${cppfiles} ${packagefiles} pch.h)
+add_library(${PROJECT_NAME}_lib ${cppfiles} ${TRAJECTORY_HOTSPOTS_PACKAGE_CPP_FILES} pch.h)
 
 # Include lib
 include_directories(
         PUBLIC
         ${CGAL_INCLUDE_DIRS}
         ${QT5_INCLUDE_DIRS}
-        ${TRAJECTORY_HOTSPOTS_DIR}/../
+        ${TRAJECTORY_HOTSPOTS_SOLUTION_DIR}/
 )
 # Include lib
 target_include_directories(${PROJECT_NAME}_lib
@@ -44,7 +32,7 @@ target_include_directories(${PROJECT_NAME}_lib
         ${PROJECT_SOURCE_DIR}/
         ${CGAL_INCLUDE_DIRS}
         ${QT5_INCLUDE_DIRS}
-        ${TRAJECTORY_HOTSPOTS_DIR}/../)
+        ${TRAJECTORY_HOTSPOTS_SOLUTION_DIR}/)
 
 
 # Link CGAL libraries to the target

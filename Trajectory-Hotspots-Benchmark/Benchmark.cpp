@@ -1,5 +1,3 @@
-//benchmark simple function
-
 int zero = 0;
 QApplication app = QApplication(zero, nullptr);
 QWidget* active_window = QApplication::activeWindow();
@@ -10,7 +8,7 @@ void fixed_length_contiguous(const Trajectory& trajectory)
 }
 
 void generate_file_type(const std::string& path, const std::string& type_name, const char* mustache_template,
-         ankerl::nanobench::Bench const& bench)
+                        ankerl::nanobench::Bench const& bench)
 {
 	std::ofstream template_out("mustache-template." + type_name);
 
@@ -21,38 +19,51 @@ void generate_file_type(const std::string& path, const std::string& type_name, c
 	ankerl::nanobench::render(mustache_template, bench, render_out);
 }
 
-const auto vec_line = std::vector<Vec2>{
-	Vec2(0, 0), Vec2(1, 1), Vec2(2, 2), Vec2(3, 3), Vec2(4, 4), Vec2(5, 5), Vec2(6, 6), Vec2(7, 7), Vec2(8, 8),
-	Vec2(9, 9),
-};
-const auto vec_crossing = std::vector<Vec2>{
-	//random vec2 within a box of -5, -5 to 10, 10
-	Vec2(0, 10), Vec2(5, 5), Vec2(7, 9), Vec2(-4, 10), Vec2(10, 10), Vec2(-7, 2), Vec2(1, -5), Vec2(2, 5), Vec2(10, 10),
-	Vec2(-10, -10),
-};
-
 int main(const int argc, const char* argv[])
 {
-	ankerl::nanobench::Bench bench;
-
-	bench.performanceCounters(true);
-	bench.title("benchmark");
-	bench.warmup(100);
-
-	const Trajectory t_line = Trajectory(vec_line);
-	bench.minEpochIterations(54272).run("line", [&]
+	if (argc < 2)
 	{
-		fixed_length_contiguous(t_line);
-	});
+		std::cerr << "Please provide a file path" << std::endl;
+		return 0;
+	}
+	const auto file_path = argv[1];
+	char x_y_delimiter = ',';
+	char point_delimiter = ' ';
 
-	const Trajectory t_crossing = Trajectory(vec_crossing);
-	bench.minEpochIterations(54272).run("crossing", [&]
+	if (argc > 2 && strlen(argv[2]) > sizeof(char))
+		x_y_delimiter = *argv[2];
+	if (argc > 3 && strlen(argv[3]) > sizeof(char))
+		point_delimiter = *argv[3];
+
+	try
 	{
-		fixed_length_contiguous(t_crossing);
-	});
-	generate_file_type("", "json", ankerl::nanobench::templates::json(), bench);
+		const Trajectory trajectory = parser::parse_trajectory(file_path, x_y_delimiter, point_delimiter);
 
-	generate_file_type("", "html", ankerl::nanobench::templates::htmlBoxplot(), bench);
+		ankerl::nanobench::Bench bench;
 
-	generate_file_type("", "csv", ankerl::nanobench::templates::csv(), bench);
+		bench.performanceCounters(true);
+		bench.title("benchmark");
+		bench.warmup(100);
+
+		bench.minEpochIterations(5427).run("crossing", [&]
+		{
+			fixed_length_contiguous(trajectory);
+		});
+		generate_file_type("", "json", ankerl::nanobench::templates::json(), bench);
+
+		generate_file_type("", "html", ankerl::nanobench::templates::htmlBoxplot(), bench);
+
+		generate_file_type("", "csv", ankerl::nanobench::templates::csv(), bench);
+
+		window t_window = window(active_window, "trajectory");
+		drawable_trajectory(trajectory).draw(t_window);
+		t_window.show();
+		return app.exec();
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << e.what() << std::endl;
+		return 1;
+	}
+	return 0;
 }
