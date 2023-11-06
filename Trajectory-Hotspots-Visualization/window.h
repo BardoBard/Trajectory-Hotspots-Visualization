@@ -2,7 +2,6 @@
 // Created by Bardio - NHL_STENDEN
 //
 #pragma once
-#include "CMakeFiles/Trajectory-Hotspots-Visualization.dir/cmake_pch.hxx"
 #include "Interfaces/drawable.h"
 #ifndef CGAL_USE_BASIC_VIEWER
 #define CGAL_USE_BASIC_VIEWER

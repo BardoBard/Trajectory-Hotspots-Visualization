@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 	const drawable_trajectory trajectory(trajectory_points);
 
 	auto ordered_y = trajectory.get_ordered_y_trajectory_segments();
-	trapezoidal_map tm = trapezoidal_map(ordered_y);
+	drawable_trapezoidal_map tm = drawable_trapezoidal_map(ordered_y);
 
 	const drawable_aabb hotspot = trajectory.get_hotspot_fixed_length_contiguous(10.f);
 	
