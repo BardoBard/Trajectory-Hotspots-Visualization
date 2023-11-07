@@ -30,7 +30,7 @@ namespace parser
 	/// \param file_path path to file + file name
 	/// \param callback function that gets called for each line
 	///	\throw std::exception if file does not exist
-	inline void parse_file(const std::string& file_path, const std::function<void(std::string& line)>& callback);
+	inline void parse_file_by_line(const std::string& file_path, const std::function<void(std::string& line)>& callback);
 
 	/// \brief loops through file line by line and calls callback function for each substring
 	/// \param file_path path to file + file name
@@ -68,12 +68,14 @@ std::string parser::get_file_raw(const std::string& file_path)
 	return file_raw;
 }
 
-void parser::parse_file(const std::string& file_path, const std::function<void(std::string& line)>& callback)
+void parser::parse_file_by_line(const std::string& file_path, const std::function<void(std::string& line)>& callback)
 {
 	if (!file_exists(file_path))
 		throw std::exception("File does not exist");
 	std::ifstream file(file_path);
 	std::string line;
+
+	// read file line by line
 	while (std::getline(file, line))
 		callback(line);
 }
@@ -81,7 +83,7 @@ void parser::parse_file(const std::string& file_path, const std::function<void(s
 void parser::parse_file_with_delimiter(const std::string& file_path, const char delimiter,
                                        const std::function<void(const std::string& substr)>& callback)
 {
-	parse_file(file_path, [&](std::string& line)
+	parse_file_by_line(file_path, [&](std::string& line)
 	{
 		std::string substring = line.substr(0, line.find(delimiter));
 		while (!substring.empty())
@@ -100,10 +102,10 @@ void parser::parse_file_with_delimiter(const std::string& file_path, const char 
 
 Trajectory parser::parse_trajectory(const std::string& file_path, const char x_y_delimiter, const char point_delimiter)
 {
-	std::vector<Vec2> trajectory_points;
 	if (!file_exists(file_path))
 		throw std::exception("File does not exist");
 
+	std::vector<Vec2> trajectory_points;
 	//this is more an estimate than the actual size, due to the fact that the numbers are floats with any amount of decimals
 	//this will almost always be larger than the actual size
 	//TODO: find a better way to estimate the size if possible
