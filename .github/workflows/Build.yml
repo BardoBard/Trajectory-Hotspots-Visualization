@@ -1,0 +1,38 @@
+name: CMake Build with Vcpkg
+
+on:
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v1.13
+        with:
+          cmake-version: '3.21'
+      - name: Cmake check
+        run: cmake --version
+
+      - name: Cache vcpkg packages
+        uses: actions/cache@v2
+        with:
+          path: vcpkg_installed
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: vcpkg-${{ runner.os }}-
+
+      - name: Install and integrate vcpkg
+        run: |
+          if [ ! -d vcpkg_installed ]; then
+            git clone https://github.com/microsoft/vcpkg.git
+            ./vcpkg/bootstrap-vcpkg.sh
+          fi
+          ./vcpkg/vcpkg install qt5 cgal opengl
+          ./vcpkg/vcpkg integrate install
+        working-directory: /
