@@ -27,7 +27,7 @@ jobs:
           key: vcpkg-${{ runner.os }}
           restore-keys: vcpkg-${{ runner.os }}-
 
-      - name: Install and integrate vcpkg
+      - name: Install and integrate vcpkg 
         run: |
           cd ~
           if [ ! -d vcpkg_installed ]; then
