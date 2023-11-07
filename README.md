@@ -39,7 +39,7 @@ vcpkg install qt5
 vcpkg install cgal
 vcpkg install opengl
 
-:: integrate vcpkg with visual studio
+# integrate vcpkg with visual studio
 vcpkg integrate install
 ```
 
