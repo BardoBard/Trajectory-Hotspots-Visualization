@@ -34,9 +34,9 @@ jobs:
             git clone https://github.com/microsoft/vcpkg.git "vcpkg_installed"
             ls
             cd vcpkg_installed
-            ./bootstrap-vcpkg.sh
+            & ./bootstrap-vcpkg.sh
           }
           cd ~
           cd vcpkg_installed
-          ./vcpkg install qt5 cgal opengl
-          ./vcpkg integrate install
+          & ./vcpkg install qt5 cgal opengl
+          & ./vcpkg integrate install
