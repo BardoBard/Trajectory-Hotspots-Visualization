@@ -29,14 +29,16 @@ jobs:
 
       - name: Install and integrate vcpkg
         run: |
+          shell: bash
           cd ~
-          if ( -not ( Test-Path vcpkg_installed ) ){
+          if [ ! -d vcpkg_installed ]; then
             git clone https://github.com/microsoft/vcpkg.git "vcpkg_installed"
             ls
             cd vcpkg_installed
-            & ./bootstrap-vcpkg.sh
-          }
+            ./bootstrap-vcpkg.sh
+          fi
           cd ~
           cd vcpkg_installed
-          & ./vcpkg install qt5 cgal opengl
-          & ./vcpkg integrate install
+          ./vcpkg install qt5 cgal opengl
+          ./vcpkg integrate install
+          
