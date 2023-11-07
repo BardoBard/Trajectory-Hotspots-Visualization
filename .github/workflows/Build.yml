@@ -29,7 +29,7 @@ jobs:
 
       - name: Install and integrate vcpkg
         run: |
-          shell: bash
+          shell: shell
           cd ~
           if [ ! -d vcpkg_installed ]; then
             git clone https://github.com/microsoft/vcpkg.git "vcpkg_installed"
