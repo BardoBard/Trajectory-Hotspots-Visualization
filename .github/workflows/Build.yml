@@ -34,7 +34,7 @@ jobs:
             git clone https://github.com/microsoft/vcpkg.git "vcpkg_installed"
             ls
             cd vcpkg_installed
-            ./vcpkg/bootstrap-vcpkg.sh
+            ./bootstrap-vcpkg.sh
           fi
           cd ~
           cd vcpkg_installed
