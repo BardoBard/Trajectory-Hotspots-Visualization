@@ -38,5 +38,5 @@ jobs:
           fi
           cd ~
           cd vcpkg_installed
-          ./vcpkg/vcpkg install qt5 cgal opengl
-          ./vcpkg/vcpkg integrate install
+          ./vcpkg install qt5 cgal opengl
+          ./vcpkg integrate install
