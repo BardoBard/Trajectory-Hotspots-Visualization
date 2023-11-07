@@ -34,6 +34,8 @@ jobs:
             git clone https://github.com/microsoft/vcpkg.git "vcpkg_installed"
             cd vcpkg_installed
             ./bootstrap-vcpkg.sh
+            ./vcpkg install qt5 cgal opengl
+            ./vcpkg integrate install
           fi
         shell: bash
           
