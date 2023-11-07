@@ -31,7 +31,7 @@ jobs:
         run: |
           if [ ! -d ~/vcpkg_installed ]; then
             git clone https://github.com/microsoft/vcpkg.git "~/vcpkg_installed"
-            ls ~/
+            ls ~/runners
             cd ~/vcpkg_installed
             ./vcpkg/bootstrap-vcpkg.sh
           fi
