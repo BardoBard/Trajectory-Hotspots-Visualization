@@ -23,8 +23,8 @@ jobs:
       - name: Cache vcpkg packages
         uses: actions/cache@v2
         with:
-          path: vcpkg_installed
-          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+          path: ~/vcpkg_installed
+          key: vcpkg-${{ runner.os }}
           restore-keys: vcpkg-${{ runner.os }}-
 
       - name: Install and integrate vcpkg
@@ -32,13 +32,8 @@ jobs:
           cd ~
           if [ ! -d vcpkg_installed ]; then
             git clone https://github.com/microsoft/vcpkg.git "vcpkg_installed"
-            ls
             cd vcpkg_installed
             ./bootstrap-vcpkg.sh
           fi
-          cd ~
-          cd vcpkg_installed
-          ./vcpkg install qt5 cgal opengl
-          ./vcpkg integrate install
         shell: bash
           
