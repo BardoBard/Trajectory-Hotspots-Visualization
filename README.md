@@ -33,9 +33,9 @@ Benchmarking tool for the Trajectory-Hotspots library. The benchmarking tool is
 ---
 
 ## Clone
+clone with submodules
 
 ```bash
-# clone with submodules
 git clone --recursive -j8 --branch "master" https://github.com/BardoBard/Trajectory-Hotspots-Visualization.git "Visualization"
 ```
 
@@ -44,15 +44,13 @@ the [website](https://vcpkg.io/en/getting-started.html).
 
 #### Install:
 
-```bash
-# install might take a while
-# install x64-windows triplet for 64 bit windows
+install might take a while 
 
+```bash
 vcpkg install qt5
 vcpkg install cgal
 vcpkg install opengl
 
-# integrate vcpkg with visual studio
 vcpkg integrate install
 ```
 
