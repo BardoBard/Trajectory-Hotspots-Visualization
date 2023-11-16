@@ -8,7 +8,6 @@
 
 class window;
 
-/// \brief 
 class drawable_trajectory : public Trajectory, drawable
 {
 public:

@@ -14,9 +14,12 @@ class window : public CGAL::Basic_viewer_qt
 private:
 	[[nodiscard]] cgal_point2d vec2_to_point(const Vec2& vec) const;
 	[[nodiscard]] cgal_point2d vec2_to_point(const float x, const float y) const;
-	bool text_visible_{true};
+	bool text_visible_{false};
 
 public:
+	/// \brief generates a window
+	/// \param parent where the window is a child of, usually the screen of the computer
+	/// \param name name of the window
 	window(QWidget* parent, const char* name = "Window"): base(parent, name)
 	{
 		base::set_draw_vertices(true);
@@ -29,13 +32,21 @@ public:
 
 	void moveEvent(QMoveEvent* event) override;
 
-	void mousePressEvent(QMouseEvent* event) override
-	{
-	}
-
 	void mouseDoubleClickEvent(QMouseEvent*) override
 	{
 	}
+
+	/// \brief gets the mouse position relative to the window
+	/// \return local mouse position
+	[[nodiscard]] Vec2 get_local_mouse_position() const;
+
+private:
+	Vec2 mouse_press_position_;
+
+public:
+	void mouseReleaseEvent(QMouseEvent* event) override;
+
+	void mousePressEvent(QMouseEvent* event) override;
 
 	void keyPressEvent(QKeyEvent* e) override;
 
@@ -58,20 +69,23 @@ public:
 
 	template <typename... Vec2>
 		requires (std::is_same_v<Vec2, class Vec2> && ...)
-	void draw_filled_area(const CGAL::IO::Color& color, const Vec2&... vecs)
-	{
-		if (sizeof...(vecs) == 0)
-			return;
-
-		face_begin(color);
-		for (const auto& vec : {vecs...})
-		{
-			// draw_line(vec, CGAL::black());
-			base::add_point_in_face(vec2_to_point(vec));
-		}
-		face_end();
-	}
-
+	void draw_filled_area(const CGAL::IO::Color& color, const Vec2&... vecs);
 
 	void draw_text(const Vec2& point, const std::string& text);
 };
+
+template <typename... Vec2>
+	requires (std::is_same_v<Vec2, class Vec2> && ...)
+void window::draw_filled_area(const CGAL::IO::Color& color, const Vec2&... vecs)
+{
+	if (sizeof...(vecs) == 0)
+		return;
+
+	face_begin(color);
+	for (const auto& vec : {vecs...})
+	{
+		// draw_line(vec, CGAL::black());
+		base::add_point_in_face(vec2_to_point(vec));
+	}
+	face_end();
+}

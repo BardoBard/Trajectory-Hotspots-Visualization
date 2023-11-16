@@ -11,6 +11,7 @@ private:
 	void breadth_first_search_node(std::vector<int>& result_out,
 	                               const std::unique_ptr<Segment_Search_Tree_Node>& node,
 	                               window& w, Vec2& offset) const;
+
 	std::vector<int> breadth_first_search(const std::unique_ptr<Segment_Search_Tree_Node>& lhs,
 	                                      const std::unique_ptr<Segment_Search_Tree_Node>& rhs, window& w, Vec2& origin) const;
 	void draw_tree(window& w) const;

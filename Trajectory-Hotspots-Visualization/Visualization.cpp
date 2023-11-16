@@ -3,39 +3,52 @@
 #include "Trajectory-Hotspots-Wrappers/drawable_trajectory.h"
 #include "Trajectory-Hotspots-Wrappers/drawable_trapezoidal_map.h"
 
+
 int main(int argc, char* argv[])
 {
-	QApplication app(argc, argv);
-	QWidget* active_window = QApplication::activeWindow();
+	if (argc < 2)
+	{
+		std::cerr << "Please provide a file path to the config file" << std::endl;
+		return 0;
+	}
+	const std::string path = argv[1];
 
-	window t_window = window(active_window, "trajectory");
-	window tm_window = window(active_window, "trapezoidal map");
+	try
+	{
+		QApplication app(argc, argv);
+		QWidget* active_window = QApplication::activeWindow();
 
-	std::vector<Vec2> trajectory_points;
+		const std::vector<parser::parsed_trajectory> trajectories = parser::parse_config(path, ' ');
 
-	trajectory_points.emplace_back(10.f, 20.f);
-	trajectory_points.emplace_back(10.f, 8.f);
-	trajectory_points.emplace_back(12.f, 10.5f);
-	trajectory_points.emplace_back(8.f, 14.f);
-	trajectory_points.emplace_back(6.f, 16.f);
-	trajectory_points.emplace_back(4.f, 20.f);
-	trajectory_points.emplace_back(4.f, 24.f);
+		for (const auto& parsed_trajectory : trajectories)
+		{
+			window tm_window = window(active_window, "trapezoidal map");
+			window t_window = window(active_window, "trajectory");
 
-	const drawable_trajectory trajectory(trajectory_points);
+			const drawable_trajectory drawable_trajectory(parsed_trajectory.trajectory);
+			auto ordered_y = drawable_trajectory.get_ordered_y_trajectory_segments();
 
-	auto ordered_y = trajectory.get_ordered_y_trajectory_segments();
-	drawable_trapezoidal_map tm = drawable_trapezoidal_map(ordered_y);
+			drawable_trapezoidal_map tm = drawable_trapezoidal_map(ordered_y);
 
-	const drawable_aabb hotspot = trajectory.get_hotspot_fixed_length_contiguous(10.f);
-	
-	hotspot.draw(t_window);
-	trajectory.draw(t_window);
+			const drawable_aabb hotspot(parsed_trajectory.run_trajectory_function());
 
-	tm.draw(tm_window);
-	tm.query_point(Vec2(5, 7), tm_window);
-	tm.query_point(Vec2(9, 15), tm_window);
+			hotspot.draw(t_window);
+			drawable_trajectory.draw(t_window);
+			std::cout << ordered_y.size() << std::endl;
+			std::cout << "hotspot: " << hotspot.min.x.get_value() << ", " << hotspot.min.y.get_value() << " - "
+				<< hotspot.max.x.get_value() << ", " << hotspot.max.y.get_value() << std::endl;
 
-	t_window.show();
-	// tm_window.show();
-	return app.exec();
+			tm.draw(tm_window);
+			tm.query_point({10, 4.5}, tm_window);
+
+			t_window.show();
+			tm_window.show();
+			app.exec();
+		}
+	}
+	catch (std::exception e)
+	{
+		std::cout << e.what() << std::endl;
+	}
+	return 0;
 }

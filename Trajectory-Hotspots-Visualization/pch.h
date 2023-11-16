@@ -16,6 +16,8 @@
 #include <Trajectory_Hotspots/trapezoidal_map.h>
 #include <Trajectory_Hotspots/trajectory.h>
 
+#include <pch.h>
+#include <file_parser.h>
 
 typedef CGAL::Simple_cartesian<double>::Point_2 cgal_point2d;
 

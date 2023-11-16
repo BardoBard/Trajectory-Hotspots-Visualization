@@ -36,8 +36,8 @@ target_include_directories(${PROJECT_NAME}_lib
 
 
 # Link CGAL libraries to the target
-target_link_libraries(${PROJECT_NAME} Qt5::Widgets CGAL::CGAL)
-target_link_libraries(${PROJECT_NAME}_lib PUBLIC Qt5::Widgets CGAL::CGAL)
+target_link_libraries(${PROJECT_NAME} Qt5::Widgets CGAL::CGAL Trajectory-Hotspots-Parser_lib)
+target_link_libraries(${PROJECT_NAME}_lib PUBLIC Qt5::Widgets CGAL::CGAL Trajectory-Hotspots-Parser_lib)
 
 # Link OpenGL libraries to the target
 if (CGAL_Qt5_FOUND)

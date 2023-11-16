@@ -19,6 +19,19 @@ Benchmarking tool for the Trajectory-Hotspots library. The benchmarking tool is
 - Add path to your trajectories with options to the Config.txt file.
 - Run the executable from the unzipped folder and give location of Config.txt file as argument.
 
+## Buttons
+
+---
+| Button     | Usage                          |
+|------------|--------------------------------|
+| Arrow Keys | Move camera                    |
+| T          | Toggle text on/off             |
+| MouseWheel | Zoom in/out                    |
+| Mouse Drag | Move camera                    |
+| +-         | Increase/Decrease Camera speed |
+| Esc        | Close application              |
+---
+
 ## Clone
 
 ```bash
