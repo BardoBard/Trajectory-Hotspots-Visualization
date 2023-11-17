@@ -38,7 +38,7 @@ Vec2 window::get_local_mouse_position() const
 void window::mouseReleaseEvent(QMouseEvent* event)
 {
 	const auto local_mouse_pos = get_local_mouse_position();
-	const auto diff = local_mouse_pos - mouse_press_position_;
+	const auto diff = local_mouse_pos - prev_mouse_click_position_;
 	//move
 	this->camera()->frame()->translate(camera()->frame()->inverseTransformOf(
 		CGAL::qglviewer::Vec( static_cast<double>(diff.x.get_value()) / 10 * camera()->flySpeed(), static_cast<double>(diff.y.get_value()) / 10 * camera()->flySpeed(), 0.0)));
@@ -47,7 +47,7 @@ void window::mouseReleaseEvent(QMouseEvent* event)
 
 void window::mousePressEvent(QMouseEvent* event)
 {
-	mouse_press_position_ = get_local_mouse_position();
+	prev_mouse_click_position_ = get_local_mouse_position();
 }
 
 void window::keyPressEvent(QKeyEvent* e)

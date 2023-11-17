@@ -20,12 +20,24 @@ std::vector<Segment> drawable_trajectory::get_ordered_y_trajectory_segments() co
 	std::vector<Segment> y_segments;
 	y_segments.reserve(ordered_segments.size());
 
+	std::set<Float> y_values;
+	Segment* prev_seg_t = nullptr;
+
 	for (Segment s : ordered_segments)
 	{
+		while (y_values.contains(s.start.y))
+		{
+			s.start.y += 1;
+			prev_seg_t->end.y += 1;
+		}
+
+		y_values.insert(s.start.y);
+		
 		s.start.x = s.start_t;
 		s.end.x = s.end_t;
 
 		y_segments.push_back(s);
+		prev_seg_t = &y_segments.back();
 	}
 	return y_segments;
 }

@@ -41,7 +41,7 @@ public:
 	[[nodiscard]] Vec2 get_local_mouse_position() const;
 
 private:
-	Vec2 mouse_press_position_;
+	Vec2 prev_mouse_click_position_;
 
 public:
 	void mouseReleaseEvent(QMouseEvent* event) override;
