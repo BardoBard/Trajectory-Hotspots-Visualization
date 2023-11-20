@@ -25,6 +25,14 @@ std::vector<Segment> drawable_trajectory::get_ordered_y_trajectory_segments() co
 
 	for (Segment s : ordered_segments)
 	{
+		s.start *= 1000;
+		s.end *= 1000;
+		s.start_t *= 1000;
+		s.end_t *= 1000;
+
+		s.start.x = s.start_t;
+		s.end.x = s.end_t;
+
 		while (y_values.contains(s.start.y))
 		{
 			s.start.y += 1;
@@ -33,8 +41,6 @@ std::vector<Segment> drawable_trajectory::get_ordered_y_trajectory_segments() co
 
 		y_values.insert(s.start.y);
 		
-		s.start.x = s.start_t;
-		s.end.x = s.end_t;
 
 		y_segments.push_back(s);
 		prev_seg_t = &y_segments.back();
