@@ -5,8 +5,13 @@
 
 #include <string>
 #include <vector>
-#include <CGAL/Qt/Basic_viewer_qt.h>
+#include <filesystem>
+#include <iostream>
 
+//nanobench
+#include <nanobench.h>
+
+#include <Trajectory-Hotspots-Visualization/pch.h>
 #include <Trajectory_Hotspots/pch.h>
 #include <Trajectory_Hotspots/vec2.h>
 #include <Trajectory_Hotspots/Float.h>
@@ -16,8 +21,8 @@
 #include <Trajectory_Hotspots/trapezoidal_map.h>
 #include <Trajectory_Hotspots/trajectory.h>
 
-#include <file_parser.h>
+//parser
+#include <Trajectory-Hotspots-Parser/file_parser.h>
 
-typedef CGAL::Simple_cartesian<double>::Point_2 cgal_point2d;
-
-constexpr auto inf = std::numeric_limits<float>::infinity();
+#include "window.h"
+#include "Trajectory-Hotspots-Wrappers/drawable_trajectory.h"

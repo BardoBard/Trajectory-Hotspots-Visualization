@@ -3,7 +3,8 @@
 //
 #include "drawable_trajectory.h"
 
-void drawable_trajectory::draw(window& w) const {
+void drawable_trajectory::draw(window& w) const
+{
 	for (const Segment& s : get_ordered_trajectory_segments())
 	{
 		w.draw_point(s.start);
@@ -11,6 +12,7 @@ void drawable_trajectory::draw(window& w) const {
 		w.draw_line(s.start, s.end);
 	}
 }
+
 std::vector<Segment> drawable_trajectory::get_ordered_y_trajectory_segments() const
 {
 	const std::vector<Segment>& ordered_segments = get_ordered_trajectory_segments();
@@ -18,11 +20,30 @@ std::vector<Segment> drawable_trajectory::get_ordered_y_trajectory_segments() co
 	std::vector<Segment> y_segments;
 	y_segments.reserve(ordered_segments.size());
 
+	std::set<Float> y_values;
+	Segment* prev_seg_t = nullptr;
+
 	for (Segment s : ordered_segments)
 	{
+		s.start *= 1000;
+		s.end *= 1000;
+		s.start_t *= 1000;
+		s.end_t *= 1000;
+
 		s.start.x = s.start_t;
 		s.end.x = s.end_t;
+
+		while (y_values.contains(s.start.y))
+		{
+			s.start.y += 1;
+			prev_seg_t->end.y += 1;
+		}
+
+		y_values.insert(s.start.y);
+		
+
 		y_segments.push_back(s);
+		prev_seg_t = &y_segments.back();
 	}
 	return y_segments;
 }

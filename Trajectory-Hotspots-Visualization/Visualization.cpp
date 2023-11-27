@@ -3,39 +3,47 @@
 #include "Trajectory-Hotspots-Wrappers/drawable_trajectory.h"
 #include "Trajectory-Hotspots-Wrappers/drawable_trapezoidal_map.h"
 
+
 int main(int argc, char* argv[])
 {
-	QApplication app(argc, argv);
-	QWidget* active_window = QApplication::activeWindow();
+	if (argc < 2)
+	{
+		std::cerr << "Please provide a file path to the config file" << std::endl;
+		return 0;
+	}
+	const std::string path = argv[1];
+	try
+	{
+		QApplication app(argc, argv);
+		QWidget* active_window = QApplication::activeWindow();
 
-	window t_window = window(active_window, "trajectory");
-	window tm_window = window(active_window, "trapezoidal map");
+		const std::vector<parser::parsed_trajectory> trajectories = parser::parse_config(path, ' ');
 
-	std::vector<Vec2> trajectory_points;
+		for (const auto& parsed_trajectory : trajectories)
+		{
+			window tm_window = window(active_window, "trapezoidal map");
+			window t_window = window(active_window, "trajectory");
 
-	trajectory_points.emplace_back(10.f, 20.f);
-	trajectory_points.emplace_back(10.f, 8.f);
-	trajectory_points.emplace_back(12.f, 10.5f);
-	trajectory_points.emplace_back(8.f, 14.f);
-	trajectory_points.emplace_back(6.f, 16.f);
-	trajectory_points.emplace_back(4.f, 20.f);
-	trajectory_points.emplace_back(4.f, 24.f);
+			const drawable_trajectory drawable_trajectory(parsed_trajectory.trajectory);
+			auto ordered_y = drawable_trajectory.get_ordered_y_trajectory_segments();
 
-	const drawable_trajectory trajectory(trajectory_points);
+			const drawable_aabb hotspot(parsed_trajectory.run_trajectory_function());
 
-	auto ordered_y = trajectory.get_ordered_y_trajectory_segments();
-	trapezoidal_map tm = trapezoidal_map(ordered_y);
+			hotspot.draw(t_window);
+			drawable_trajectory.draw(t_window);
 
-	const drawable_aabb hotspot = trajectory.get_hotspot_fixed_length_contiguous(10.f);
-	
-	hotspot.draw(t_window);
-	trajectory.draw(t_window);
+			drawable_trapezoidal_map tm = drawable_trapezoidal_map(ordered_y, 1337);
 
-	tm.draw(tm_window);
-	tm.query_point(Vec2(5, 7), tm_window);
-	tm.query_point(Vec2(9, 15), tm_window);
+			tm.draw(tm_window);
 
-	t_window.show();
-	// tm_window.show();
-	return app.exec();
+			t_window.show();
+			tm_window.show();
+			app.exec();
+		}
+	}
+	catch (std::exception e)
+	{
+		std::cout << e.what() << std::endl;
+	}
+	return 0;
 }
