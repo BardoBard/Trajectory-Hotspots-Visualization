@@ -3,7 +3,7 @@ name: CMake Build with Vcpkg
 on:
   pull_request:
     branches:
-      - '*'
+      - 'pipeline'
 
 jobs:
   build:
