@@ -10,76 +10,72 @@ cgal_point2d window::vec2_to_point(const float x, const float y) const
 	return cgal_point2d(x, y);
 }
 
-void window::moveEvent(QMoveEvent* event)
+void window::mouseMoveEvent(QMouseEvent* mouse_event)
 {
-	switch (event->type())
-	{
-	case QEvent::Scroll:
-		base::moveEvent(event);
-		break;
-	default:
-		break;
-	}
-}
-
-Vec2 window::get_local_mouse_position() const
-{
-	//get mouse position
-	const QPoint mouse_pos = QCursor::pos();
-	//get window pos
-	const QPoint window_pos = this->pos();
-
-	//get local mouse position
-	const QPoint local_mouse_pos = mouse_pos - window_pos;
-
-	return {static_cast<float>(local_mouse_pos.x()), static_cast<float>(local_mouse_pos.y())};
-}
-
-void window::mouseReleaseEvent(QMouseEvent* event)
-{
-	const auto local_mouse_pos = get_local_mouse_position();
-	const auto diff = local_mouse_pos - prev_mouse_click_position_;
-	//move
-	this->camera()->frame()->translate(camera()->frame()->inverseTransformOf(
-		CGAL::qglviewer::Vec( static_cast<double>(diff.x.get_value()) / 10 * camera()->flySpeed(), static_cast<double>(diff.y.get_value()) / 10 * camera()->flySpeed(), 0.0)));
-	update();
-}
-
-void window::mousePressEvent(QMouseEvent* event)
-{
-	prev_mouse_click_position_ = get_local_mouse_position();
+	Basic_viewer_qt::mouseMoveEvent(mouse_event);
 }
 
 void window::keyPressEvent(QKeyEvent* e)
 {
 	//arrow keys
-	switch (e->key())
+	if (e->modifiers() == Qt::NoModifier)
 	{
-	case Qt::Key_Escape:
-		close();
-		break;
+		switch (e->key())
+		{
+		//exit
+		case Qt::Key_Escape:
+			close();
+			break;
 
-	case Qt::Key_T:
-		base::set_draw_text(text_visible_ = !text_visible_);
-		redraw();
-		break;
+		//toggle text
+		case Qt::Key_T:
+			base::set_draw_text(text_visible_ = !text_visible_);
+			redraw();
+			displayMessage(QString("Text: %1").arg(text_visible_ ? "on" : "off"));
+			break;
+		//toggle points
+		case Qt::Key_P:
+			base::keyPressEvent(std::make_unique<QKeyEvent>(QEvent::KeyPress, Qt::Key_V, Qt::NoModifier).get());
+			break;
+		//toggle lines
+		case Qt::Key_L:
+			base::keyPressEvent(std::make_unique<QKeyEvent>(QEvent::KeyPress, Qt::Key_E, Qt::NoModifier).get());
+			break;
 
-	case Qt::Key_Plus:
-		camera()->setFlySpeed(camera()->flySpeed() * 1.5);
-		break;
-	case Qt::Key_Minus:
-		camera()->setFlySpeed(camera()->flySpeed() * 0.75);
-		break;
+		//camera speed
+		case Qt::Key_Plus:
+			camera()->setFlySpeed(camera()->flySpeed() * 1.5);
+			displayMessage(QString("Camera speed: %1").arg(camera()->flySpeed()));
+			break;
+		case Qt::Key_Minus:
+			camera()->setFlySpeed(camera()->flySpeed() * 0.75);
+			displayMessage(QString("Camera speed: %1").arg(camera()->flySpeed()));
+			break;
 
-	case Qt::Key_Right:
-	case Qt::Key_Up:
-	case Qt::Key_Down:
-	case Qt::Key_Left:
-		base::keyPressEvent(e);
-		break;
-
-	default:
-		break;
+		//camera movement
+		case Qt::Key_Left:
+			camera()->frame()->translate(camera()->frame()->inverseTransformOf(
+				CGAL::qglviewer::Vec(-10.0 * camera()->flySpeed(), 0.0, 0.0)));
+			update();
+			break;
+		case Qt::Key_Right:
+			camera()->frame()->translate(camera()->frame()->inverseTransformOf(
+				CGAL::qglviewer::Vec(10.0 * camera()->flySpeed(), 0.0, 0.0)));
+			update();
+			break;
+		case Qt::Key_Up:
+			camera()->frame()->translate(camera()->frame()->inverseTransformOf(
+				CGAL::qglviewer::Vec(0.0, 10.0 * camera()->flySpeed(), 0.0)));
+			update();
+			break;
+		case Qt::Key_Down:
+			camera()->frame()->translate(camera()->frame()->inverseTransformOf(
+				CGAL::qglviewer::Vec(0.0, -10.0 * camera()->flySpeed(), 0.0)));
+			update();
+			break;
+		default:
+			break;
+		}
 	}
 
 	// base::keyPressEvent(e);
@@ -90,6 +86,7 @@ void window::draw(const std::vector<class drawable>& drawables)
 	for (const auto& drawable : drawables)
 		drawable.draw(*this);
 }
+
 
 void window::draw_line(const Segment& segment, const CGAL::IO::Color& color)
 {

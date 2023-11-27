@@ -24,5 +24,5 @@
 //parser
 #include <Trajectory-Hotspots-Parser/file_parser.h>
 
-#include "window.h"
+#include "Window/window.h"
 #include "Trajectory-Hotspots-Wrappers/drawable_trajectory.h"

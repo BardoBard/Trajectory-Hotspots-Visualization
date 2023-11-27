@@ -10,14 +10,17 @@ class window;
 
 class drawable_trajectory : public Trajectory, drawable
 {
+private:
+	void breadth_first_search_node(
+		const std::unique_ptr<Segment_Search_Tree_Node>& node,
+		const AABB*& result,
+		Float& length,
+		const Float& max_length) const;
+
 public:
 	using Trajectory::Trajectory;
 
-	explicit drawable_trajectory(const Trajectory& t) : Trajectory(t)
-	{
-	}
-
-	explicit drawable_trajectory(const Trajectory&& t) : Trajectory(t)
+	explicit drawable_trajectory(const Trajectory& t) : Trajectory(t.get_ordered_trajectory_segments())
 	{
 	}
 
@@ -40,4 +43,18 @@ public:
 	{
 		return drawable_aabb(Trajectory::get_hotspot_fixed_length_contiguous(length));
 	}
+
+	/// \brief this is a naive implementation of fixed radius contiguous, it's not perfectly accurate but it's fast
+	/// \verbatim
+	/// given size: 20
+	///			     [root]
+	///			   /       \ (1)
+	///			  20       10 <-- 20 will be the result because it has the biggest length within the radius
+	///			 /  \     /  \ (2)
+	///			5    10  5    5
+	///
+	/// \endverbatim
+	/// \param radius radius of the hotspot
+	/// \return approximate hotspot of the trajectory with a fixed radius
+	[[nodiscard]] AABB get_approx_hotspot_fixed_radius_contiguous(const Float& radius) const;
 };

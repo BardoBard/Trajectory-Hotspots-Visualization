@@ -1,49 +1,19 @@
-#include "window.h"
-#include "Trajectory-Hotspots-Wrappers/drawable_aabb.h"
-#include "Trajectory-Hotspots-Wrappers/drawable_trajectory.h"
-#include "Trajectory-Hotspots-Wrappers/drawable_trapezoidal_map.h"
-
+#include "Window/main_window.h"
 
 int main(int argc, char* argv[])
 {
-	if (argc < 2)
-	{
-		std::cerr << "Please provide a file path to the config file" << std::endl;
-		return 0;
-	}
-	const std::string path = argv[1];
+	QApplication app(argc, nullptr);
+	QWidget* active_window = QApplication::activeWindow();
 	try
 	{
-		QApplication app(argc, argv);
-		QWidget* active_window = QApplication::activeWindow();
+		main_window main_window(active_window, "Help");
+		main_window.show();
 
-		const std::vector<parser::parsed_trajectory> trajectories = parser::parse_config(path, ' ');
-
-		for (const auto& parsed_trajectory : trajectories)
-		{
-			window tm_window = window(active_window, "trapezoidal map");
-			window t_window = window(active_window, "trajectory");
-
-			const drawable_trajectory drawable_trajectory(parsed_trajectory.trajectory);
-			auto ordered_y = drawable_trajectory.get_ordered_y_trajectory_segments();
-
-			const drawable_aabb hotspot(parsed_trajectory.run_trajectory_function());
-
-			hotspot.draw(t_window);
-			drawable_trajectory.draw(t_window);
-
-			drawable_trapezoidal_map tm = drawable_trapezoidal_map(ordered_y, 1337);
-
-			tm.draw(tm_window);
-
-			t_window.show();
-			tm_window.show();
-			app.exec();
-		}
+		return app.exec();
 	}
-	catch (std::exception e)
+	catch (...)
 	{
-		std::cout << e.what() << std::endl;
+		std::cout << "Something went wrong with the window" << std::endl;
 	}
 	return 0;
 }
