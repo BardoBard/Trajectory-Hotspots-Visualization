@@ -28,6 +28,7 @@ add_executable(${PROJECT_NAME} ${cppfiles})
 
 # Link necessary libraries and include directories
 target_link_libraries(${PROJECT_NAME} PRIVATE Trajectory-Hotspots-Visualization_lib)
+target_link_libraries(${PROJECT_NAME} PRIVATE Trajectory-Hotspots-Parser_lib)
 target_link_libraries(${PROJECT_NAME} PRIVATE nanobench)
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE pch.h)

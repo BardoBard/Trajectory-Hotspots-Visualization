@@ -1,5 +1,3 @@
-//benchmark simple function
-
 int zero = 0;
 QApplication app = QApplication(zero, nullptr);
 QWidget* active_window = QApplication::activeWindow();
@@ -10,49 +8,65 @@ void fixed_length_contiguous(const Trajectory& trajectory)
 }
 
 void generate_file_type(const std::string& path, const std::string& type_name, const char* mustache_template,
-         ankerl::nanobench::Bench const& bench)
+                        ankerl::nanobench::Bench const& bench, std::filesystem::path template_path)
 {
-	std::ofstream template_out("mustache-template." + type_name);
+	template_path = std::filesystem::path(path).append("mustache-template." + type_name);
 
-	template_out << mustache_template;
+	if (!parser::file_exists(template_path.string()))
+		throw std::runtime_error("Mustache template file does not exist");
 
+	const std::string mustache_template_string = parser::get_file_raw(template_path.string());
+
+	std::cout << "Generating " << type_name << " file..." << std::endl;
+	std::cout << mustache_template_string << std::endl;
 	std::ofstream render_out(path + bench.title() + "-visualization." + type_name);
 
-	ankerl::nanobench::render(mustache_template, bench, render_out);
+	ankerl::nanobench::render(template_path.string().c_str(), bench, render_out);
 }
 
-const auto vec_line = std::vector<Vec2>{
-	Vec2(0, 0), Vec2(1, 1), Vec2(2, 2), Vec2(3, 3), Vec2(4, 4), Vec2(5, 5), Vec2(6, 6), Vec2(7, 7), Vec2(8, 8),
-	Vec2(9, 9),
-};
-const auto vec_crossing = std::vector<Vec2>{
-	//random vec2 within a box of -5, -5 to 10, 10
-	Vec2(0, 10), Vec2(5, 5), Vec2(7, 9), Vec2(-4, 10), Vec2(10, 10), Vec2(-7, 2), Vec2(1, -5), Vec2(2, 5), Vec2(10, 10),
-	Vec2(-10, -10),
-};
+void generate_file_type(const std::string& path, const std::string& type_name, const char* mustache_template,
+                        ankerl::nanobench::Bench const& bench)
+{
+	generate_file_type(path, type_name, mustache_template, bench, parser::current_path_string);
+}
 
 int main(const int argc, const char* argv[])
 {
-	ankerl::nanobench::Bench bench;
-
-	bench.performanceCounters(true);
-	bench.title("benchmark");
-	bench.warmup(100);
-
-	const Trajectory t_line = Trajectory(vec_line);
-	bench.minEpochIterations(54272).run("line", [&]
+	if (argc < 2)
 	{
-		fixed_length_contiguous(t_line);
-	});
-
-	const Trajectory t_crossing = Trajectory(vec_crossing);
-	bench.minEpochIterations(54272).run("crossing", [&]
+		std::cerr << "Please provide a file path to the config file" << std::endl;
+		return 0;
+	}
+	const std::string file_path = argv[1];
+	const std::string out_path = argc > 2 ? argv[2] : std::filesystem::current_path().string();
+	try
 	{
-		fixed_length_contiguous(t_crossing);
-	});
-	generate_file_type("", "json", ankerl::nanobench::templates::json(), bench);
+		const std::vector<parser::parsed_trajectory> trajectories = parser::parse_config(file_path, ' ');
 
-	generate_file_type("", "html", ankerl::nanobench::templates::htmlBoxplot(), bench);
+		ankerl::nanobench::Bench bench;
 
-	generate_file_type("", "csv", ankerl::nanobench::templates::csv(), bench);
+		bench.performanceCounters(true);
+		bench.title("benchmark");
+
+		std::cout << "Benchmarking..." << std::endl;
+		for (const auto& parsed_trajectory : trajectories)
+		{
+			bench.warmup(10).minEpochIterations(100).run(parsed_trajectory.name, [&]
+			{
+				ankerl::nanobench::doNotOptimizeAway(parsed_trajectory.run_trajectory_function());
+			});
+		}
+
+		generate_file_type(out_path, "json", ankerl::nanobench::templates::json(), bench, out_path);
+
+		generate_file_type(out_path, "html", ankerl::nanobench::templates::htmlBoxplot(), bench, out_path);
+
+		generate_file_type(out_path, "csv", ankerl::nanobench::templates::csv(), bench, out_path);
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << e.what() << std::endl;
+		return 1;
+	}
+	return 0;
 }
