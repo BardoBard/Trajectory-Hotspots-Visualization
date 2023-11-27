@@ -48,6 +48,11 @@ clone with submodules
 git clone --recursive -j8 --branch "master" https://github.com/BardoBard/Trajectory-Hotspots-Visualization.git "Visualization"
 ```
 
+get the latest version of trajectory-hotspots
+```bash
+git submodule update --remote --merge
+```
+
 This assumes you have **vcpkg** and **cmake**. If not, follow the instructions on
 the [website](https://vcpkg.io/en/getting-started.html).
 

@@ -42,13 +42,14 @@ public:
 					{
 						file_pick_callback_(file_path);
 					}
-					catch (const std::exception& e)
+					catch (const parser::parsing_error& e)
 					{
 						QMessageBox::critical(this, "Error", e.what());
 					}
 					catch (...)
 					{
-						QMessageBox::critical(this, "Error", "Something went wrong while loading the file");
+						QMessageBox::critical(this, "Error",
+						                      "Something went wrong while loading the file, make sure you've got the right configuration");
 					}
 			}
 		}

@@ -12,6 +12,10 @@ file(
     ${CMAKE_CURRENT_SOURCE_DIR}/*.h
 )
 
+# copy examples to build directory
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../examples/
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/examples/)
+
 # Create the executable target and specify the source files
 add_executable(${PROJECT_NAME} ${cppfiles} ${TRAJECTORY_HOTSPOTS_PACKAGE_CPP_FILES})
 
