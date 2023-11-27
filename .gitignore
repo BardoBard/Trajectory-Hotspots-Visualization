@@ -6,7 +6,7 @@
 /out*/
 
 #packages ignore
-/packages/.*?/*
+/packages/
 
 #git
 .git
