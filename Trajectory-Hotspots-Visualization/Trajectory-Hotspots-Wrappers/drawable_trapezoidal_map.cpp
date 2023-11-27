@@ -1,14 +1,14 @@
 //
 // Created by Bardio - NHL_STENDEN
 //
-#include "trapezoidal_map.h"
+#include "drawable_trapezoidal_map.h"
 
-#include "aabb.h"
+#include "drawable_aabb.h"
 
-void trapezoidal_map::breadth_first_search() {
-	leaf_nodes_.clear(); //clear nodes from previous search
+std::vector<const Trapezoidal_Leaf_Node*> drawable_trapezoidal_map::get_leaf_nodes() const {
 	std::queue<const Trapezoidal_Node*> node_queue;
 	std::unordered_set<const Trapezoidal_Node*> visited_nodes;
+	std::vector<const Trapezoidal_Leaf_Node*> leaf_nodes;
 
 	node_queue.push(root.get());
 	while (!node_queue.empty())
@@ -38,10 +38,11 @@ void trapezoidal_map::breadth_first_search() {
 		}
 		//check if current node is a leaf node
 		else if (const auto current_node = dynamic_cast<const Trapezoidal_Leaf_Node*>(base_ptr))
-			leaf_nodes_.push_back(current_node);
+			leaf_nodes.push_back(current_node);
 	}
+	return leaf_nodes;
 }
-Trapezoidal_Leaf_Node* trapezoidal_map::query_point(const Vec2& point, window& w) const {
+Trapezoidal_Leaf_Node* drawable_trapezoidal_map::query_point(const Vec2& point, window& w) const {
 	const Vec2 inf_vec = { inf, inf };
 	w.draw_point(point, CGAL::yellow(), true);
 
@@ -68,11 +69,13 @@ Trapezoidal_Leaf_Node* trapezoidal_map::query_point(const Vec2& point, window& w
 	return trapezoidal_leaf_node;
 }
 
-void trapezoidal_map::draw(window& w) const {
+void drawable_trapezoidal_map::draw(window& w) const {
+	const auto leaf_nodes = get_leaf_nodes();
+
 	const Vec2 inf_vec = { inf, inf };
 	auto min = inf_vec;
 	auto max = -inf_vec;
-	for (const auto leaf : leaf_nodes_)
+	for (const auto leaf : leaf_nodes)
 	{
 		const auto& s1 = *leaf->left_segment;
 		//TODO: remove magic numbers
@@ -94,7 +97,7 @@ void trapezoidal_map::draw(window& w) const {
 	}
 	if (min != inf_vec && max != -inf_vec)
 	{
-		const aabb bounding_box = { min, max };
+		const drawable_aabb bounding_box = { min, max };
 		bounding_box.draw(w);
 	}
 }
