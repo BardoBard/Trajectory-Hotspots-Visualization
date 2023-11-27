@@ -2,7 +2,7 @@
 // Created by Bardio - NHL_STENDEN
 //
 #pragma once
-#include "Interfaces/drawable.h"
+#include "../Interfaces/drawable.h"
 #ifndef CGAL_USE_BASIC_VIEWER
 #define CGAL_USE_BASIC_VIEWER
 #endif
@@ -17,10 +17,14 @@ private:
 	bool text_visible_{false};
 
 public:
+	explicit window() : base(nullptr, "Window")
+	{
+	}
+
 	/// \brief generates a window
 	/// \param parent where the window is a child of, usually the screen of the computer
 	/// \param name name of the window
-	window(QWidget* parent, const char* name = "Window"): base(parent, name)
+	explicit window(QWidget* parent, const char* name = "Window") : base(parent, name)
 	{
 		base::set_draw_vertices(true);
 		base::set_draw_edges(true);
@@ -30,24 +34,9 @@ public:
 		base::set_draw_text(text_visible_);
 	}
 
-	void moveEvent(QMoveEvent* event) override;
+	~window() override = default;
 
-	void mouseDoubleClickEvent(QMouseEvent*) override
-	{
-	}
-
-	/// \brief gets the mouse position relative to the window
-	/// \return local mouse position
-	[[nodiscard]] Vec2 get_local_mouse_position() const;
-
-private:
-	Vec2 prev_mouse_click_position_;
-
-public:
-	void mouseReleaseEvent(QMouseEvent* event) override;
-
-	void mousePressEvent(QMouseEvent* event) override;
-
+	void mouseMoveEvent(QMouseEvent*) override;
 	void keyPressEvent(QKeyEvent* e) override;
 
 	/**
@@ -56,9 +45,22 @@ public:
 	 */
 	void draw(const std::vector<class drawable>& drawables);
 
-	void draw_line(const Segment& segment, const CGAL::IO::Color& color = CGAL::IO::blue());
-	void draw_line(const Vec2& start, const Vec2& end, const CGAL::IO::Color& color = CGAL::IO::blue());
 
+	/// \brief draws a line with a color
+	/// \param segment segment to draw with
+	/// \param color color of the line
+	void draw_line(const Segment& segment, const CGAL::IO::Color& color);
+
+	/// \brief draws a line with a color
+	/// \param start start of the line
+	/// \param end end of the line
+	/// \param color color of the line
+	void draw_line(const Vec2& start, const Vec2& end, const CGAL::IO::Color& color);
+
+	/// \brief draws a point with a color
+	/// \param point point to draw
+	/// \param color color of the point
+	/// \param show_text ability to show position of the point in text above the point
 	void draw_point(const Vec2& point, const CGAL::IO::Color& color = CGAL::IO::red(), bool show_text = true);
 
 	void draw_box(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4, const CGAL::IO::Color& color);
@@ -83,9 +85,7 @@ void window::draw_filled_area(const CGAL::IO::Color& color, const Vec2&... vecs)
 
 	face_begin(color);
 	for (const auto& vec : {vecs...})
-	{
-		// draw_line(vec, CGAL::black());
 		base::add_point_in_face(vec2_to_point(vec));
-	}
+
 	face_end();
 }

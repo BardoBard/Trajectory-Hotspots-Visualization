@@ -1,3 +1,2 @@
-trajectory1-length-0.2 C:\projects\Trajectory-Visualization\Visualization-Parser\examples\trajectory1.txt , | get_hotspot_fixed_length_contiguous 0.2
-trajectory1-length-3 C:\projects\Trajectory-Visualization\Visualization-Parser\examples\trajectory1.txt , | get_hotspot_fixed_length_contiguous 3
-trajectory2 C:\projects\Trajectory-Visualization\Visualization-Parser\examples\trajectory2.txt ,   get_hotspot_fixed_length_contiguous 2
+trajectory1-length-0.2 examples/trajectory1.txt , | get_hotspot_fixed_length_contiguous 0.2
+trajectory2 examples/trajectory2.txt ,   get_hotspot_fixed_length_contiguous 2

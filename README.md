@@ -1,38 +1,47 @@
 Everything here incorporates the [Trajectory-Hotspots](https://github.com/NHLStenden-ISAL/Trajectory_Hotspots) library
 as a submodule. The visualization is based on the algorithms used in the library.
 
+---
+## Installation
+
+1. [Download Latest Version](https://github.com/BardoBard/Trajectory-Hotspots-Visualization/releases/latest) and unzip.
+2. Add path to your Trajectory.txt with options to the Config.txt file.
+3. Run the executable from the unzipped folder and give location of Config.txt file as argument.
+
+---
+
 # Trajectory-Hotspots-Visualization
 
 Visualizes trajectories and their hotspots in 2D.
 
-Simple example:
+### Examples:
 
-<img src=".github/images/simple_example.png" alt="simple_example" width="300vw" title="Trajectory"/>
+<img src=".github/images/simple_example.png" alt="simple_example" style="margin-right: 9%;" width="45%" title="Trajectory"/> <img src=".github/images/large_example.png" alt="simple_example" width="45%" title="Trajectory"/>
+
+---
 
 # Trajectory-Hotspots-Benchmark
 
 Benchmarking tool for the Trajectory-Hotspots library. The benchmarking tool is
 
-## Installation
-
-- [Download Latest Version](https://github.com/BardoBard/Trajectory-Hotspots-Visualization/releases/latest) and unzip.
-- Add path to your trajectories with options to the Config.txt file.
-- Run the executable from the unzipped folder and give location of Config.txt file as argument.
+---
 
 ## Buttons
 
+Keyboard:
+
 ---
-| Button     | Usage                          |
-|------------|--------------------------------|
-| Arrow Keys | Move camera                    |
-| T          | Toggle text on/off             |
-| MouseWheel | Zoom in/out                    |
-| Mouse Drag | Move camera                    |
-| +-         | Increase/Decrease Camera speed |
-| Esc        | Close application              |
+![keyboard_buttons.png](.github/images/keyboard_buttons.png)
+
+Mouse:
+
+---
+
+![mouse_buttons.png](.github/images/mouse_buttons.png)
 ---
 
 ## Clone
+
 clone with submodules
 
 ```bash
@@ -44,7 +53,7 @@ the [website](https://vcpkg.io/en/getting-started.html).
 
 #### Install:
 
-install might take a while 
+install might take a while
 
 ```bash
 vcpkg install qt5
@@ -56,7 +65,9 @@ vcpkg integrate install
 
 ## Dependencies
 
-- QT5 (5.15.11)
-- CGAL (5.6)
-- OpenGl (2022-12-04#3)
-- Nanobench (4.3.11)
+| Dependency | Version      |
+|------------|--------------|
+| CGAL       | 5.6          |
+| CGAL[QT]   | -            |
+| OpenGl     | 2022-12-04#3 |
+| Nanobench  | 4.3.11       |

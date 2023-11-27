@@ -93,7 +93,8 @@ void drawable_trapezoidal_map::draw(window& w) const
 			w.draw_point(start, CGAL::black(), true);
 
 			query_point(left->start, w);
-			query_point(left->start - Vec2{Float::fixed_epsilon * 100, 0}, w); //nudge the point a bit to the left
+			//BUG: equals implementation is not working perfectly on fixed_epsilon
+			query_point(left->start - Vec2{Float::fixed_epsilon * 10, 0}, w); //nudge the point a bit to the left
 
 			if (start.x < min.x)
 				min.x = start.x;

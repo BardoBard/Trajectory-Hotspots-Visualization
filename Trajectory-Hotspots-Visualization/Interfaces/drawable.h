@@ -2,7 +2,7 @@
 // Created by Bardio - NHL_STENDEN
 //
 #pragma once
-#include "../window.h"
+#include "../Window/window.h"
 
 class window;
 
