@@ -10,9 +10,22 @@ cgal_point2d window::vec2_to_point(const float x, const float y) const
 	return cgal_point2d(x, y);
 }
 
+void window::wheelEvent(QWheelEvent* wheel_event)
+{
+	//get delta
+	const bool zoom_in = wheel_event->angleDelta().y() > 0;
+
+	//zoom
+	camera()->frame()->translate(camera()->frame()->inverseTransformOf(
+		CGAL::qglviewer::Vec(0.0, 0.0, camera()->frame()->translation().z * (zoom_in ? -0.1 : 0.1))));
+
+	//update
+	update();
+}
+
 void window::mouseMoveEvent(QMouseEvent* mouse_event)
 {
-	Basic_viewer_qt::mouseMoveEvent(mouse_event);
+	base::mouseMoveEvent(mouse_event);
 }
 
 void window::keyPressEvent(QKeyEvent* e)
@@ -77,8 +90,6 @@ void window::keyPressEvent(QKeyEvent* e)
 			break;
 		}
 	}
-
-	// base::keyPressEvent(e);
 }
 
 void window::draw(const std::vector<class drawable>& drawables)

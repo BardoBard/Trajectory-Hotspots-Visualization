@@ -60,130 +60,151 @@ namespace parser
 		}
 	};
 
-	/// \brief checks if directory exists
-	/// \param file_name path to file + file name
-	/// \return true if directory exists
-	inline bool dir_exists(const std::string& file_name) noexcept
+	class parser
 	{
-		return std::filesystem::is_directory(file_name);
-	}
-
-	/// \brief this is the current path of the executable
-	const inline static std::filesystem::path current_path = std::filesystem::current_path();
-
-	/// \brief this is the current path of the executable as string
-	const inline static std::string current_path_string = std::filesystem::current_path().string();
-
-	/// \brief checks if file exists
-	/// \param file_name file_name path to file + file name
-	/// \return true if file exists
-	inline bool file_exists(const std::string& file_name) noexcept
-	{
-		return std::filesystem::is_regular_file(file_name);
-	}
-
-	/// \brief reads entire file and returns it as string
-	/// \param file_path path to file + file name
-	/// \return raw file contents as string
-	inline std::string read_file(const std::string& file_path)
-	{
-		return std::string(std::istreambuf_iterator(std::ifstream(file_path).rdbuf()),
-		                   std::istreambuf_iterator<char>());
-	}
-
-	/// \brief returns raw file as string
-	/// \param file_path path to file + file name
-	///	\throw parsing_error if file does not exist
-	/// \return raw file as string
-	inline std::string get_file_raw(const std::string& file_path);
-
-	/// \brief loops through file line by line and calls callback function
-	/// \param file_path path to file + file name
-	/// \param callback function that gets called for each line
-	/// \param header_length amount of lines to skip
-	///	\throw parsing_error if file does not exist
-	inline void parse_file_by_line(std::string file_path,
-	                               const std::function<void(std::string& line)>& callback, int header_length);
-
-	/// \brief loops through file line by line and calls callback function for each substring
-	/// \param file_path path to file + file name
-	/// \param delimiter delimiter between substrings
-	/// \param callback function that gets called for each substring for each line
-	/// \param header_length amount of lines to skip
-	///	\throw parsing_error if file does not exist
-	inline void parse_file_with_delimiter(const std::string& file_path, const char delimiter,
-	                                      const std::function<void(const std::string& substr)>& callback,
-	                                      int header_length);
-
-	//TODO: reuse parse_trajectory function, currently there is a lot of duplicate code
-
-	/// \brief returns trajectory from file
-	/// \param file_path path to file + file name
-	/// \param x_y_delimiter delimiter between x and y
-	/// \param point_delimiter delimiter between points
-	/// \param header_length amount of lines to skip
-	///	\throw parsing_error if file does not exist
-	///	\throw parsing_error if trajectory is empty or has less than 2 points
-	/// \return Trajectory with points from file
-	inline Trajectory parse_trajectory(std::string file_path, const char x_y_delimiter,
-	                                   const char point_delimiter, int header_length);
-
-	/// \brief returns trajectory from file where every line is a point
-	/// \param file_path path to file + file name
-	/// \param x_y_delimiter delimiter between x and y
-	/// \param header_length amount of lines to skip
-	///	\throw parsing_error if file does not exist
-	///	\throw parsing_error if trajectory is empty or has less than 2 points
-	/// \return Trajectory with points from file
-	inline Trajectory parse_trajectory(std::string file_path, const char x_y_delimiter, int header_length);
-
-	/**
-	 * \brief finds all trajectories in config file parses them and returns them
-	 * \param config_file_path path to config file
-	 * \param delimiter delimiter between each item, N will be used for newline delimiter
-	 * \return list of parsed trajectories
-	 * \throw parsing_error if file does not exist
-	 * \throw parsing_error if trajectory function is not found
-	 * \throw parsing_error if trajectory is empty or has less than 2 points
-	 */
-	inline std::vector<::parser::parsed_trajectory> parse_config(std::string config_file_path,
-	                                                             const char delimiter);
-
-	/// \brief hashes a string which is a constexpr
-	/// \param str string to hash
-	/// \param h can be left empty
-	/// \return unsigned int hash
-	constexpr unsigned hash_string(const char* str, const unsigned h = 0)
-	{
-		return !str[h] ? 5381 : (hash_string(str, h + 1) * 33) ^ str[h];
-	}
-
-	/// \brief returns trajectory function based on name
-	/// \param name name of the trajectory function
-	///	\throw parsing_error if trajectory function is not found
-	/// \return a trajectory function callback
-	constexpr inline parsed_trajectory::trajectory_function_callback get_trajectory_function(
-		const std::string_view& name)
-	{
-		switch (hash_string(name.data()))
+	private:
+		/// \brief hashes a string which is a constexpr
+		/// \param str string to hash
+		/// \param h can be left empty
+		/// \return unsigned int hash
+		static constexpr unsigned hash_string(const char* str, const unsigned h = 0)
 		{
-		case hash_string("get_hotspot_fixed_length_contiguous"):
-			return &Trajectory::get_hotspot_fixed_length_contiguous;
-		case hash_string("get_hotspot_fixed_length"):
-			return &Trajectory::get_hotspot_fixed_length;
-		case hash_string("get_hotspot_fixed_radius_contiguous"):
-			return &Trajectory::get_hotspot_fixed_radius_contiguous;
-		case hash_string("get_hotspot_fixed_radius"):
-			return &Trajectory::get_hotspot_fixed_radius;
-		default:
-			throw parsing_error("Trajectory function not found");
+			return !str[h] ? 5381 : (hash_string(str, h + 1) * 33) ^ str[h];
 		}
-		return nullptr;
-	}
+
+		/// \brief returns trajectory function based on name
+		/// \param name name of the trajectory function
+		///	\throw parsing_error if trajectory function is not found
+		/// \return a trajectory function callback
+		static constexpr inline parsed_trajectory::trajectory_function_callback get_trajectory_function(
+			const std::string_view& name)
+		{
+			switch (hash_string(name.data()))
+			{
+			case hash_string("get_hotspot_fixed_length_contiguous"):
+				return &Trajectory::get_hotspot_fixed_length_contiguous;
+			case hash_string("get_hotspot_fixed_length"):
+				return &Trajectory::get_hotspot_fixed_length;
+			case hash_string("get_hotspot_fixed_radius_contiguous"):
+				return &Trajectory::get_hotspot_fixed_radius_contiguous;
+			case hash_string("get_hotspot_fixed_radius"):
+				return &Trajectory::get_hotspot_fixed_radius;
+			default:
+				throw parsing_error("Trajectory function not found");
+			}
+			return nullptr;
+		}
+
+	public:
+		/// \brief checks if directory exists
+		/// \param file_name path to file + file name
+		/// \return true if directory exists
+		inline static bool dir_exists(const std::string& file_name) noexcept
+		{
+			return std::filesystem::is_directory(file_name);
+		}
+
+		/// \brief this is the current path of the executable
+		const inline static std::filesystem::path current_path = std::filesystem::current_path();
+
+		/// \brief this is the current path of the executable as string
+		const inline static std::string current_path_string = std::filesystem::current_path().string();
+
+		/// \brief checks if file exists
+		/// \param file_name file_name path to file + file name
+		/// \return true if file exists
+		inline static bool file_exists(const std::string& file_name) noexcept
+		{
+			return std::filesystem::is_regular_file(file_name);
+		}
+
+		/// \brief reads entire file and returns it as string
+		/// \param file_path path to file + file name
+		/// \return raw file contents as string
+		inline static std::string read_file(const std::string& file_path)
+		{
+			return std::string(std::istreambuf_iterator(std::ifstream(file_path).rdbuf()),
+			                   std::istreambuf_iterator<char>());
+		}
+
+		/// \brief returns raw file as string
+		/// \param file_path path to file + file name
+		///	\throw parsing_error if file does not exist
+		/// \return raw file as string
+		inline static std::string get_file_raw(const std::string& file_path);
+
+		/// \brief loops through file line by line and calls callback function
+		/// \param file_path path to file + file name
+		/// \param callback function that gets called for each line
+		/// \param header_length amount of lines to skip
+		///	\throw parsing_error if file does not exist
+		inline static void parse_file_by_line(std::string file_path,
+		                                      const std::function<void(std::string& line)>& callback,
+		                                      int header_length);
+
+		/// \brief loops through file line by line and calls callback function for each substring
+		/// \param file_path path to file + file name
+		/// \param delimiter delimiter between substrings
+		/// \param callback function that gets called for each substring for each line
+		/// \param header_length amount of lines to skip
+		///	\throw parsing_error if file does not exist
+		inline static void parse_file_with_delimiter(const std::string& file_path, const char delimiter,
+		                                             const std::function<void(const std::string& substr)>& callback,
+		                                             int header_length);
+
+		/// \brief returns trajectory from file
+		/// \param file_path path to file + file name
+		/// \param x_y_delimiter delimiter between x and y
+		/// \param point_delimiter delimiter between points
+		/// \param header_length amount of lines to skip
+		///	\throw parsing_error if file does not exist
+		///	\throw parsing_error if trajectory is empty or has less than 2 points
+		/// \return Trajectory with points from file
+		inline static Trajectory parse_trajectory(std::string file_path, const char x_y_delimiter,
+		                                          const char point_delimiter, int header_length);
+		/**
+		 * \brief finds all trajectories in config file parses them and returns them
+		 * \param config_file_path path to config file
+		 * \param delimiter delimiter between each item, N will be used for newline delimiter
+		 * \return list of parsed trajectories
+		 * \throw parsing_error if file does not exist
+		 * \throw parsing_error if trajectory function is not found
+		 * \throw parsing_error if trajectory is empty or has less than 2 points
+		 */
+		inline static std::vector<::parser::parsed_trajectory> parse_config(std::string config_file_path,
+		                                                                    const char delimiter);
+
+		/// \brief splits string by delimiter and returns all substrings
+		///	\note if there are multiple delimiters in a row we want to add the delimiter as a substring
+		///	\note e.g "test|||test" should return ["test", "|", "test"]
+		/// \note e.g "test||test" should return ["test", "test"]
+		/// \param str string to split
+		/// \param delimiter delimiter between substrings
+		/// \return vector of substrings that were split by delimiter
+		inline static std::vector<std::string> get_all_substring_by_delimiter(std::string str, const char delimiter)
+		{
+			std::vector<std::string> result{};
+
+			std::stringstream data(str);
+
+			while (std::getline(data, str, delimiter))
+			{
+				if (str.empty())
+				{
+					if (data.peek() != delimiter) continue;
+
+					std::getline(data, str, delimiter);
+					str = delimiter;
+				}
+				result.push_back(str);
+			}
+			return result;
+		}
+	}; //class parser
 } // namespace parser
 
 
-std::string parser::get_file_raw(const std::string& file_path)
+std::string parser::parser::get_file_raw(const std::string& file_path)
 {
 	if (!file_exists(file_path))
 		throw parsing_error("File does not exist");
@@ -199,8 +220,8 @@ std::string parser::get_file_raw(const std::string& file_path)
 	return file_raw;
 }
 
-void parser::parse_file_by_line(std::string file_path, const std::function<void(std::string& line)>& callback,
-                                int header_length = 0)
+void parser::parser::parse_file_by_line(std::string file_path, const std::function<void(std::string& line)>& callback,
+                                        int header_length = 0)
 {
 	if (!file_exists(file_path))
 	{
@@ -224,9 +245,9 @@ void parser::parse_file_by_line(std::string file_path, const std::function<void(
 	}
 }
 
-void parser::parse_file_with_delimiter(const std::string& file_path, const char delimiter,
-                                       const std::function<void(const std::string& substr)>& callback,
-                                       const int header_length = 0)
+void parser::parser::parse_file_with_delimiter(const std::string& file_path, const char delimiter,
+                                               const std::function<void(const std::string& substr)>& callback,
+                                               const int header_length = 0)
 {
 	parse_file_by_line(file_path, [&](std::string& line)
 	{
@@ -245,8 +266,8 @@ void parser::parse_file_with_delimiter(const std::string& file_path, const char 
 	}, header_length);
 }
 
-Trajectory parser::parse_trajectory(std::string file_path, const char x_y_delimiter,
-                                    const int header_length = 0)
+Trajectory parser::parser::parse_trajectory(std::string file_path, const char x_y_delimiter, const char point_delimiter,
+                                            const int header_length = 0)
 {
 	if (!file_exists(file_path))
 	{
@@ -255,121 +276,40 @@ Trajectory parser::parse_trajectory(std::string file_path, const char x_y_delimi
 		file_path = current_path_string + file_path;
 	}
 
-	std::unordered_set<float> trajectory_set_x;
-	std::unordered_set<float> trajectory_set_y;
+	std::unordered_set<std::string> trajectory_set_x;
+	std::unordered_set<std::string> trajectory_set_y;
 	std::vector<Vec2> trajectory_points;
-	//this is more an estimate than the actual size, due to the fact that the numbers are floats with any amount of decimals
-	//this will almost always be larger than the actual size
-	//TODO: find a better way to estimate the size if possible
-	const size_t size = (std::filesystem::file_size(file_path) / 2 / 2) / 1.5f;
 
-	//reserve size based on file size
-	trajectory_points.reserve(size);
-	parse_file_by_line(file_path, [&](const std::string& substr)
-	{
-		// throws exception if substring is not a float
-		Float x = std::stof(substr.substr(0, substr.find(x_y_delimiter)));
-		Float y = std::stof(substr.substr(substr.find(x_y_delimiter) + 1, substr.size()));
+	//TODO: find a way to estimate the size and reserve
 
-		//TODO: this could be simplified if Vec2/Float has a hash function
-		for (auto found_x = trajectory_set_x.find(x.get_value()); found_x != trajectory_set_x.end();
-		     found_x = trajectory_set_x.find(x.get_value()))
-			x += Float::fixed_epsilon * 10; //BUG: equals implementation is not working perfectly
-
-		for (auto found_y = trajectory_set_y.find(y.get_value()); found_y != trajectory_set_y.end();
-		     found_y = trajectory_set_y.find(y.get_value()))
-			y += Float::fixed_epsilon * 10; //BUG: equals implementation is not working perfectly
-
-
-		trajectory_set_x.insert(x.get_value());
-		trajectory_set_y.insert(y.get_value());
-		trajectory_points.emplace_back(x, y);
-	}, header_length);
-
-	if (trajectory_points.empty() || trajectory_points.size() < 2)
-		throw parsing_error(trajectory_points.empty()
-			                         ? "Trajectory is empty"
-			                         : " Trajectory has less than 2 points");
-
-	return {trajectory_points};
-}
-
-Trajectory parser::parse_trajectory(std::string file_path, const char x_y_delimiter, const char point_delimiter,
-                                    const int header_length = 0)
-{
-	if (!file_exists(file_path))
-	{
-		if (!file_exists(current_path_string + file_path))
-			throw parsing_error("File does not exist");
-		file_path = current_path_string + file_path;
-	}
-
-	std::vector<Vec2> trajectory_points;
-	std::unordered_set<float> trajectory_set_x;
-	std::unordered_set<float> trajectory_set_y;
-
-	//this is more an estimate than the actual size, due to the fact that the numbers are floats with any amount of decimals
-	//this will almost always be larger than the actual size
-	//TODO: find a better way to estimate the size if possible
-	const size_t size = (std::filesystem::file_size(file_path) / 2 / 2) / 1.5f;
-
-	//reserve size based on file size
-	trajectory_points.reserve(size);
 	parse_file_with_delimiter(file_path, point_delimiter, [&](const std::string& substr)
 	{
-		// throws exception if substring is not a float
-		Float x = std::stof(substr.substr(0, substr.find(x_y_delimiter)));
-		Float y = std::stof(substr.substr(substr.find(x_y_delimiter) + 1, substr.size()));
+		const std::string x = substr.substr(0, substr.find(x_y_delimiter));
+		const std::string y = substr.substr(substr.find(x_y_delimiter) + 1, substr.size());
 
 		//TODO: this could be simplified if Vec2/Float has a hash function
-		for (auto found_x = trajectory_set_x.find(x.get_value()); found_x != trajectory_set_x.end();
-		     found_x = trajectory_set_x.find(x.get_value()))
-			x += Float::fixed_epsilon * 10;
+		if (trajectory_set_x.contains(x) || trajectory_set_y.contains(y))
+			return; // skip the points, go to next point
 
-		for (auto found_y = trajectory_set_y.find(y.get_value()); found_y != trajectory_set_y.end();
-		     found_y = trajectory_set_y.find(y.get_value()))
-			y += Float::fixed_epsilon * 10;
+		trajectory_set_x.insert(x);
+		trajectory_set_y.insert(y);
 
-		trajectory_set_x.insert(x.get_value());
-		trajectory_set_y.insert(y.get_value());
-
-		trajectory_points.emplace_back(x, y);
+		// throws exception if substring is not a float
+		trajectory_points.emplace_back(std::stof(x) * 1000, std::stof(y) * 1000);
 	}, header_length);
 
 	if (trajectory_points.empty() || trajectory_points.size() < 2)
 		throw parsing_error(trajectory_points.empty()
-			                         ? "Trajectory is empty"
-			                         : " Trajectory has less than 2 points");
+			                    ? "Trajectory is empty"
+			                    : " Trajectory has less than 2 points");
 
+	std::cout << "Trajectory size: " << trajectory_points.size() << std::endl;
 
 	return {trajectory_points};
 }
 
-inline std::vector<std::string> get_all_substring_by_delimiter(std::string str, const char delimiter)
-{
-	std::vector<std::string> result;
-
-	std::stringstream data(str);
-
-	while (std::getline(data, str, delimiter))
-	{
-		// if there are multiple delimiters in a row we want to add the delimiter as a substring
-		// example: "test|||test" should return ["test", "|", "test"]
-		// example: "test||test" should return ["test", "test"]
-		if (str.empty())
-		{
-			if (data.peek() != delimiter) continue;
-
-			std::getline(data, str, delimiter);
-			str = delimiter;
-		}
-		result.push_back(str);
-	}
-	return result;
-}
-
-inline std::vector<parser::parsed_trajectory> parser::parse_config(std::string config_file_path,
-                                                                   const char delimiter)
+inline std::vector<parser::parsed_trajectory> parser::parser::parse_config(std::string config_file_path,
+                                                                           const char delimiter)
 {
 	if (!file_exists(config_file_path))
 	{
@@ -392,7 +332,7 @@ inline std::vector<parser::parsed_trajectory> parser::parse_config(std::string c
 		const std::string trajectory_file_path = substrings.at(1);
 
 		const char x_y_delimiter = substrings.at(2).front();
-		const char point_delimiter = substrings.at(3).front();
+		char point_delimiter = substrings.at(3).front();
 
 		const std::string trajectory_function_name = substrings.at(4);
 
@@ -404,12 +344,10 @@ inline std::vector<parser::parsed_trajectory> parser::parse_config(std::string c
 
 		const auto trajectory_function = get_trajectory_function(trajectory_function_name);
 
-		Trajectory trajectory;
-
 		if (point_delimiter == 'N')
-			trajectory = parse_trajectory(trajectory_file_path, x_y_delimiter, header_length);
-		else
-			trajectory = parse_trajectory(trajectory_file_path, x_y_delimiter, point_delimiter, header_length);
+			point_delimiter = '\n';
+
+		Trajectory trajectory = parse_trajectory(trajectory_file_path, x_y_delimiter, point_delimiter, header_length);
 
 		trajectories.emplace_back(name, trajectory, trajectory_function, length);
 	}, 0);

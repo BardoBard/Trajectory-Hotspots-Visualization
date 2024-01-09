@@ -17,14 +17,16 @@ private:
 	bool text_visible_{false};
 
 public:
-	explicit window() : base(nullptr, "Window")
+	explicit window() : window(nullptr, "Window", 1280, 720)
 	{
 	}
 
 	/// \brief generates a window
 	/// \param parent where the window is a child of, usually the screen of the computer
 	/// \param name name of the window
-	explicit window(QWidget* parent, const char* name = "Window") : base(parent, name)
+	/// \param width width
+	/// \param height height
+	explicit window(QWidget* parent, const char* name = "Window", const int width = 1280, int const height = 720) : base(parent, name)
 	{
 		base::set_draw_vertices(true);
 		base::set_draw_edges(true);
@@ -32,10 +34,11 @@ public:
 		base::set_draw_rays(true);
 		base::set_draw_lines(true);
 		base::set_draw_text(text_visible_);
+
+		base::window()->resize(QSize(width, height));
 	}
 
-	~window() override = default;
-
+	void wheelEvent(QWheelEvent*) override;
 	void mouseMoveEvent(QMouseEvent*) override;
 	void keyPressEvent(QKeyEvent* e) override;
 

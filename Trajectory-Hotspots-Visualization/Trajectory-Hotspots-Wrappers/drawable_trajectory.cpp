@@ -77,8 +77,8 @@ AABB drawable_trajectory::get_approx_hotspot_fixed_radius_contiguous(const Float
 	Float length = 0;
 	const AABB* result = nullptr;
 
-	breadth_first_search_node(tree.root.left, result, length, radius * 2);
-	breadth_first_search_node(tree.root.right, result, length, radius * 2);
+	breadth_first_search_node(tree.root.left, result, length, radius);
+	breadth_first_search_node(tree.root.right, result, length, radius);
 
 	// return the bounding box of the node with the longest length
 	// if no node was found, return an empty AABB
