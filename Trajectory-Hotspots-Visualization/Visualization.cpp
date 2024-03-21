@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 	}
 	catch (...)
 	{
-		std::cout << "Something went wrong with the window" << std::endl;
+		std::cerr << "Something went wrong with the window" << std::endl;
 	}
 	return 0;
 }

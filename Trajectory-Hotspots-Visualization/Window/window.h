@@ -17,14 +17,15 @@ private:
 	bool text_visible_{false};
 
 public:
-	explicit window() : base(nullptr, "Window")
+	explicit window() : window(nullptr, "Window")
 	{
 	}
 
 	/// \brief generates a window
 	/// \param parent where the window is a child of, usually the screen of the computer
 	/// \param name name of the window
-	explicit window(QWidget* parent, const char* name = "Window") : base(parent, name)
+	/// \param icon_path path to the icon to use for the window
+	explicit window(QWidget* parent, const char* name = "Window", const std::string& icon_path = "etc/icon.png") : base(parent, name)
 	{
 		base::set_draw_vertices(true);
 		base::set_draw_edges(true);
@@ -32,6 +33,12 @@ public:
 		base::set_draw_rays(true);
 		base::set_draw_lines(true);
 		base::set_draw_text(text_visible_);
+
+		if (!parser::file_exists(icon_path))
+			throw parser::parsing_error("main program icon not found");
+
+		base::setWindowIcon(QIcon(icon_path.c_str()));
+
 	}
 
 	~window() override = default;

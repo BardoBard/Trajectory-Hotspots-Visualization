@@ -2,12 +2,6 @@ Everything here incorporates the [Trajectory-Hotspots](https://github.com/NHLSte
 as a submodule. The visualization is based on the algorithms used in the library.
 
 ---
-## Installation
-
-1. [Download Latest Version](https://github.com/BardoBard/Trajectory-Hotspots-Visualization/releases/latest) and unzip.
-2. Add path to your Trajectory.txt with options to the Config.txt file.
-3. Run the executable from the unzipped folder and give location of Config.txt file as argument.
-
 ---
 
 # Trajectory-Hotspots-Visualization
@@ -39,34 +33,6 @@ Mouse:
 
 ![mouse_buttons.png](.github/images/mouse_buttons.png)
 ---
-
-## Clone
-
-clone with submodules
-
-```bash
-git clone --recursive -j8 --branch "master" https://github.com/BardoBard/Trajectory-Hotspots-Visualization.git "Visualization"
-```
-
-get the latest version of trajectory-hotspots
-```bash
-git submodule update --remote --merge
-```
-
-This assumes you have **vcpkg** and **cmake**. If not, follow the instructions on
-the [website](https://vcpkg.io/en/getting-started.html).
-
-#### Install:
-
-install might take a while
-
-```bash
-vcpkg install qt5
-vcpkg install cgal
-vcpkg install opengl
-
-vcpkg integrate install
-```
 
 ## Dependencies
 

@@ -63,18 +63,8 @@ private:
 				std::make_unique<window>(active_window, ("trajectory- " + parsed_trajectory.name).data()));
 			window* t_window = windows_.back().get();
 
-			std::vector<Segment> segments = parsed_trajectory.trajectory.get_ordered_trajectory_segments();
-			for (auto& segment : segments)
-			{
-				segment.start *= 1000;
-				segment.end *= 1000;
-				segment.start_t *= 1000;
-				segment.end_t *= 1000;
-			}
-			parsed_trajectory.trajectory = Trajectory(segments);
-
 			//trajectory
-			const drawable_trajectory drawable_traject(segments);
+			const drawable_trajectory drawable_traject(parsed_trajectory.trajectory);
 			drawable_traject.draw(*t_window);
 
 			//hotspots

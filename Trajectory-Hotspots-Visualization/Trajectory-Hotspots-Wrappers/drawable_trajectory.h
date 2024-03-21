@@ -54,7 +54,7 @@ public:
 	///			5    10  5    5
 	///
 	/// \endverbatim
-	/// \param radius radius of the hotspot
-	/// \return approximate hotspot of the trajectory with a fixed radius
-	[[nodiscard]] AABB get_approx_hotspot_fixed_radius_contiguous(const Float& radius) const;
+	/// \param diameter 2 * radius of the hotspot
+	/// \return approximate hotspot of the trajectory with a fixed diameter
+	[[nodiscard]] AABB get_approx_hotspot_fixed_diameter_contiguous(const Float& diameter) const;
 };
