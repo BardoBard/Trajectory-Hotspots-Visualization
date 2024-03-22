@@ -43,7 +43,7 @@ void window::keyPressEvent(QKeyEvent* e)
 			break;
 
 		//camera speed
-		case Qt::Key_Plus:
+		case Qt::Key_Equal:
 			camera()->setFlySpeed(camera()->flySpeed() * 1.5);
 			displayMessage(QString("Camera speed: %1").arg(camera()->flySpeed()));
 			break;
