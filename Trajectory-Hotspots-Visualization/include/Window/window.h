@@ -2,7 +2,8 @@
 // Created by Bardio - NHL_STENDEN
 //
 #pragma once
-#include "../Interfaces/drawable.h"
+#include <Interfaces/drawable.h>
+
 #ifndef CGAL_USE_BASIC_VIEWER
 #define CGAL_USE_BASIC_VIEWER
 #endif

@@ -1,12 +1,13 @@
 //
 // Created by Bardio - NHL_STENDEN
 //
+
 #pragma once
-#include "window.h"
-#include "file_pick_table_widget.h"
-#include "Trajectory-Hotspots-Visualization/Trajectory-Hotspots-Wrappers/drawable_aabb.h"
-#include "Trajectory-Hotspots-Visualization/Trajectory-Hotspots-Wrappers/drawable_trajectory.h"
-#include "Trajectory-Hotspots-Visualization/Trajectory-Hotspots-Wrappers/drawable_trapezoidal_map.h"
+#include <Window/window.h>
+#include <Window/file_pick_table_widget.h.>
+#include <Trajectory-Hotspots-Wrappers/drawable_aabb.h>
+#include <Trajectory-Hotspots-Wrappers/drawable_trajectory.h>
+#include <Trajectory-Hotspots-Wrappers/drawable_trapezoidal_map.h>
 
 class main_window : public window
 {
@@ -70,7 +71,7 @@ private:
 			//hotspots
 			const drawable_aabb hotspot(parsed_trajectory.run_trajectory_function());
 			const drawable_aabb approx_hotspot(
-				drawable_trajectory(parsed_trajectory.trajectory).get_approx_hotspot_fixed_radius_contiguous(
+				drawable_trajectory(parsed_trajectory.trajectory).get_approx_hotspot_fixed_diameter_contiguous(
 					parsed_trajectory.length));
 
 			//draw hotspots

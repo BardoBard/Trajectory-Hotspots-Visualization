@@ -1,4 +1,4 @@
-#include "main_window.h"
+#include <Window/main_window.h>
 #include "CGAL/Qt/resources/qglviewer-icon.xpm"
 
 void main_window::initialize_table_widget()

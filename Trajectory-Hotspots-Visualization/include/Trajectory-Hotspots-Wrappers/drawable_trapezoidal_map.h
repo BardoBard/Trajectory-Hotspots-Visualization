@@ -3,7 +3,7 @@
 //
 #pragma once
 
-#include "../Interfaces/drawable.h"
+#include <Interfaces/drawable.h>
 
 class drawable_trapezoidal_map : public Trapezoidal_Map, drawable
 {

@@ -1,10 +1,11 @@
 //
 // Created by Bardio - NHL_STENDEN
 //
+
 #pragma once
 
-#include "drawable_aabb.h"
-#include "../Interfaces/drawable.h"
+#include <Trajectory-Hotspots-Wrappers/drawable_aabb.h>
+#include <Interfaces/drawable.h>
 
 class window;
 

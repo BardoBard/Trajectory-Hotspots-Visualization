@@ -1,4 +1,4 @@
-#include "Window/main_window.h"
+#include <Window/main_window.h>
 
 int main(int argc, char* argv[])
 {
@@ -10,6 +10,10 @@ int main(int argc, char* argv[])
 		main_window.show();
 
 		return app.exec();
+	}
+	catch (const parser::parsing_error& e)
+	{
+		std::cerr << "Error parsing the file: " << e.what() << std::endl;
 	}
 	catch (...)
 	{

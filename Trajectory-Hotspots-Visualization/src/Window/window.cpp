@@ -1,4 +1,4 @@
-#include "window.h"
+#include <Window/window.h>
 
 cgal_point2d window::vec2_to_point(const Vec2& vec) const
 {

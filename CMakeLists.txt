@@ -12,9 +12,13 @@ set(PACKAGE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/packages)
 set(TRAJECTORY_HOTSPOTS_SOLUTION_DIR ${PACKAGE_DIR}/Trajectory_Hotspots/Trajectory_Hotspots)
 set(TRAJECTORY_HOTSPOTS_DIR ${PACKAGE_DIR}/Trajectory_Hotspots/Trajectory_Hotspots/Trajectory_Hotspots)
 
-include_directories(
-        ${PACKAGE_DIR}/packages/*/
+file(GLOB_RECURSE TRAJECTORY_HOTSPOTS_PACKAGE_CPP_FILES
+        "${TRAJECTORY_HOTSPOTS_SOLUTION_DIR}/Trajectory_Hotspots/*.cpp"
 )
+
+# Remove the main.cpp file
+list(REMOVE_ITEM TRAJECTORY_HOTSPOTS_PACKAGE_CPP_FILES "${TRAJECTORY_HOTSPOTS_SOLUTION_DIR}/Trajectory_Hotspots/Trajectory_Hotspots.cpp")
+
 # Add subdirectories
 add_subdirectory(Trajectory-Hotspots-Parser)
 add_subdirectory(Trajectory-Hotspots-Visualization)
