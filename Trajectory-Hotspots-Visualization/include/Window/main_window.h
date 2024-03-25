@@ -1,7 +1,6 @@
 //
 // Created by Bardio - NHL_STENDEN
 //
-
 #pragma once
 #include <Window/window.h>
 #include <Window/file_pick_table_widget.h.>
@@ -11,21 +10,50 @@
 
 class main_window : public window
 {
+public:
+	/// \brief struct for the description of a window
+	struct window_description
+	{
+		const char* title;
+		const char* description;
+	};
+
+	struct mouse_binding
+	{
+		mouse_binding(const ::Qt::KeyboardModifiers modifiers, const ::Qt::MouseButton button,
+		              const bool double_click, const QString& description) : modifiers(modifiers), button(button),
+		                                                                     double_click(double_click),
+		                                                                     description(description)
+		{
+		}
+
+		::Qt::KeyboardModifiers modifiers;
+		::Qt::MouseButton button;
+		bool double_click = false;
+		QString description;
+	};
+
 private:
 	typedef window base;
+	window_description window_description_;
+	std::vector<std::unique_ptr<window>> windows_;
 
 private:
-	std::vector<std::unique_ptr<window>> windows_{};
-
-private:
-	void initialize_table_widget();
+	void initialize_table_widget(const file_pick_table_widget::t_file_pick_callback& callback, const int width,
+	                             const int height);
 	void initialize_key_bindings();
 
 public:
 	/// \brief generates a help window
 	/// \param parent where the window is a child of, usually the screen of the computer
+	/// \param file_pick_callback callback function for when the config file is picked
+	///	\param description description of the window
 	/// \param name name of the window
-	explicit main_window(QWidget* parent, const char* name = "Help");
+	/// \param width width, default is 600
+	///	\param height height, default is 400
+	explicit main_window(QWidget* parent, const file_pick_table_widget::t_file_pick_callback& file_pick_callback,
+	                     const window_description& description,
+	                     const char* name = "Help", const int width = 600, const int height = 400);
 
 	/// \brief this is an override of the base class function
 	/// \return string with the help text
@@ -35,6 +63,17 @@ public:
 	/// \param title title of the help window
 	/// \return string with the help text
 	QString helpString(const char* title) const override;
+
+	/// \brief sets the keyboard bindings
+	/// \param map map of key bindings
+	void setKeyboardDescription(QMap<unsigned int, QString> map)
+	{
+		keyDescription_ = std::move(map);
+	}
+
+	/// \brief sets the key bindings
+	/// \param bindings vector of key bindings
+	void setMouseDescription(const std::vector<mouse_binding>& bindings);
 
 	void show()
 	{
@@ -47,47 +86,4 @@ public:
 			window->close();
 		windows_.clear();
 	}
-
-private:
-	file_pick_table_widget::t_file_pick_callback callback_ = [this](const std::string& path)
-	{
-		std::vector<parser::parsed_trajectory> trajectories = parser::parse_config(path, ' ');
-		QWidget* active_window = parentWidget();
-
-		for (parser::parsed_trajectory& parsed_trajectory : trajectories)
-		{
-			windows_.emplace_back(
-				std::make_unique<window>(active_window, ("trapezoidal map - " + parsed_trajectory.name).data()));
-			window* tm_window = windows_.back().get();
-
-			windows_.emplace_back(
-				std::make_unique<window>(active_window, ("trajectory- " + parsed_trajectory.name).data()));
-			window* t_window = windows_.back().get();
-
-			//trajectory
-			const drawable_trajectory drawable_traject(parsed_trajectory.trajectory);
-			drawable_traject.draw(*t_window);
-
-			//hotspots
-			const drawable_aabb hotspot(parsed_trajectory.run_trajectory_function());
-			const drawable_aabb approx_hotspot(
-				drawable_trajectory(parsed_trajectory.trajectory).get_approx_hotspot_fixed_diameter_contiguous(
-					parsed_trajectory.length));
-
-			//draw hotspots
-			if (hotspot.min != Vec2{0, 0} && hotspot.max != Vec2{0, 0})
-				hotspot.draw(*t_window);
-			if (approx_hotspot.min != Vec2{0, 0} && approx_hotspot.max != Vec2{0, 0})
-				approx_hotspot.draw(*t_window);
-
-			//trapezoidal map
-			auto ordered_y = drawable_traject.get_ordered_y_trajectory_segments();
-			drawable_trapezoidal_map tm = drawable_trapezoidal_map(ordered_y);
-			tm.draw(*tm_window);
-
-			//show windows
-			t_window->show();
-			tm_window->show();
-		}
-	};
 };

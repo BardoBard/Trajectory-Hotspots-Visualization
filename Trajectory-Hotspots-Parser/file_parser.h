@@ -68,6 +68,13 @@ namespace parser
 		return std::filesystem::is_directory(file_name);
 	}
 
+	/// \brief returns the directory of a file
+	/// \param file_name path to file + file name
+	inline static std::string get_dir(const std::string& file_name) noexcept
+	{
+		return std::filesystem::path(file_name).parent_path().string() + '/';
+	}
+
 	/// \brief this is the current path of the executable
 	const inline static std::filesystem::path current_path = std::filesystem::current_path();
 
@@ -95,7 +102,7 @@ namespace parser
 	/// \param file_path path to file + file name
 	///	\throw parsing_error if file does not exist
 	/// \return raw file as string
-	inline std::string get_file_raw(const std::string& file_path);
+	inline std::string get_file_raw(std::string file_path);
 
 	/// \brief loops through file line by line and calls callback function
 	/// \param file_path path to file + file name
@@ -183,10 +190,15 @@ namespace parser
 } // namespace parser
 
 
-std::string parser::get_file_raw(const std::string& file_path)
+std::string parser::get_file_raw(std::string file_path)
 {
 	if (!file_exists(file_path))
-		throw parsing_error("File does not exist");
+	{
+		if (!file_exists(current_path_string + file_path))
+			throw parsing_error("File does not exist: " + current_path_string + file_path);
+		file_path = current_path_string + file_path;
+	}
+
 
 	std::string file_raw;
 	std::ifstream file(file_path);
@@ -205,7 +217,7 @@ void parser::parse_file_by_line(std::string file_path, const std::function<void(
 	if (!file_exists(file_path))
 	{
 		if (!file_exists(current_path_string + file_path))
-			throw parsing_error("File does not exist");
+			throw parsing_error("File does not exist: " + current_path_string + file_path);
 		file_path = current_path_string + file_path;
 	}
 
@@ -250,8 +262,8 @@ Trajectory parser::parse_trajectory(std::string file_path, const char x_y_delimi
 {
 	if (!file_exists(file_path))
 	{
-		if (!file_exists(current_path_string + file_path))
-			throw parsing_error("File does not exist");
+		if (!file_exists(current_path_string + "\\" + file_path))
+			throw parsing_error("File does not exist: " + current_path_string + file_path);
 		file_path = current_path_string + file_path;
 	}
 
@@ -325,7 +337,7 @@ inline std::vector<parser::parsed_trajectory> parser::parse_config(std::string c
 	if (!file_exists(config_file_path))
 	{
 		if (!file_exists(current_path_string + config_file_path))
-			throw parsing_error("File does not exist");
+			throw parsing_error("File does not exist: " + current_path_string + config_file_path);
 		config_file_path = current_path_string + config_file_path;
 	}
 
@@ -340,7 +352,7 @@ inline std::vector<parser::parsed_trajectory> parser::parse_config(std::string c
 		if (substrings.size() > 7 || substrings.size() < 6)
 			throw parsing_error("\"" + line + "\" the arguments don't match, please provide a different input");
 		const std::string name = substrings.at(0);
-		const std::string trajectory_file_path = substrings.at(1);
+		std::string trajectory_file_path = substrings.at(1);
 
 		const char x_y_delimiter = substrings.at(2).front();
 		char point_delimiter = substrings.at(3).front();
@@ -357,6 +369,7 @@ inline std::vector<parser::parsed_trajectory> parser::parse_config(std::string c
 
 		if (point_delimiter == 'N')
 			point_delimiter = '\n';
+
 		Trajectory trajectory = parse_trajectory(trajectory_file_path, x_y_delimiter, point_delimiter, header_length);
 
 		trajectories.emplace_back(name, trajectory, trajectory_function, length);

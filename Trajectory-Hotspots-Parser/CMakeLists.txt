@@ -1,6 +1,10 @@
 # Project name
 project(Trajectory-Hotspots-Parser)
 
+# Copy examples to build directory
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../examples/
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/examples/)
+
 # Recursive globbing to find all files in a directory
 file(
   GLOB_RECURSE cppfiles

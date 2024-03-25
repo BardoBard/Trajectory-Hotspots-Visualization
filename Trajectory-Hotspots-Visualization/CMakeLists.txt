@@ -15,7 +15,7 @@ file(
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../examples/
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/examples/)
 
-# copy examples to build directory
+# copy etc to build directory
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../etc/
         DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/etc/)
 

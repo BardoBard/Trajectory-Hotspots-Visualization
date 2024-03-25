@@ -32,3 +32,13 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Trajectory-Hotspots-Parser_lib)
 target_link_libraries(${PROJECT_NAME} PRIVATE nanobench)
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE pch.h)
+
+# copy etc to build directory
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../etc/
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/etc/)
+        
+# copy examples to build directory
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../examples/
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/examples/)
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../templates DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
