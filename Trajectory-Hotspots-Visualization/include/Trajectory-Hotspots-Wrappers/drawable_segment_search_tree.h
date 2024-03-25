@@ -1,9 +1,10 @@
 //
 // Created by Bardio - NHL_STENDEN
 //
+
 #pragma once
 
-#include "../Interfaces/drawable.h"
+#include <Interfaces/drawable.h>
 
 class drawable_segment_search_tree : public Segment_Search_Tree, drawable
 {

@@ -1,9 +1,9 @@
 //
 // Created by Bardio - NHL_STENDEN
 //
-#include "drawable_trapezoidal_map.h"
 
-#include "drawable_aabb.h"
+#include <Trajectory-Hotspots-Wrappers/drawable_trapezoidal_map.h>
+#include <Trajectory-Hotspots-Wrappers/drawable_aabb.h>
 
 std::vector<const Trapezoidal_Leaf_Node*> drawable_trapezoidal_map::get_leaf_nodes() const
 {

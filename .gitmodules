@@ -1,3 +1,6 @@
 [submodule "packages/Trajectory_Hotspots"]
 	path = packages/Trajectory_Hotspots
 	url = https://github.com/NHLStenden-ISAL/Trajectory_Hotspots.git
+[submodule "packages/docs"]
+	path = packages/docs
+	url = https://github.com/BardoBard/Trajectory-Hotspots-Visualization.wiki.git

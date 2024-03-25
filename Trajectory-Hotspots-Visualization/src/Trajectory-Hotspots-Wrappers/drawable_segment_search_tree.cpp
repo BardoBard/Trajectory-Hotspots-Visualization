@@ -1,9 +1,10 @@
 //
 // Created by Bardio - NHL_STENDEN
 //
-#include "drawable_segment_search_tree.h"
 
-#include "drawable_aabb.h"
+#include <Trajectory-Hotspots-Wrappers/drawable_segment_search_tree.h>
+
+#include <Trajectory-Hotspots-Wrappers/drawable_aabb.h>
 
 void drawable_segment_search_tree::draw_tree(window& w) const
 {

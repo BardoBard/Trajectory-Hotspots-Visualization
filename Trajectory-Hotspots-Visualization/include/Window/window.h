@@ -2,7 +2,8 @@
 // Created by Bardio - NHL_STENDEN
 //
 #pragma once
-#include "../Interfaces/drawable.h"
+#include <Interfaces/drawable.h>
+
 #ifndef CGAL_USE_BASIC_VIEWER
 #define CGAL_USE_BASIC_VIEWER
 #endif
@@ -17,14 +18,18 @@ private:
 	bool text_visible_{false};
 
 public:
-	explicit window() : base(nullptr, "Window")
+	explicit window() : window(nullptr, "Window", 1280, 720, "etc/icon.png")
 	{
 	}
 
 	/// \brief generates a window
 	/// \param parent where the window is a child of, usually the screen of the computer
 	/// \param name name of the window
-	explicit window(QWidget* parent, const char* name = "Window") : base(parent, name)
+	/// \param width width
+	/// \param height height
+	/// \param icon_path path to the icon to use for the window
+	explicit window(QWidget* parent, const char* name = "Window", const int width = 1280, int const height = 720,
+	                const std::string& icon_path = "etc/icon.png") : base(parent, name)
 	{
 		base::set_draw_vertices(true);
 		base::set_draw_edges(true);
@@ -32,10 +37,16 @@ public:
 		base::set_draw_rays(true);
 		base::set_draw_lines(true);
 		base::set_draw_text(text_visible_);
+
+		if (!parser::file_exists(icon_path))
+			throw parser::parsing_error("main program icon not found");
+
+		base::setWindowIcon(QIcon(icon_path.c_str()));
+
+		base::window()->resize(QSize(width, height));
 	}
 
-	~window() override = default;
-
+	void wheelEvent(QWheelEvent*) override;
 	void mouseMoveEvent(QMouseEvent*) override;
 	void keyPressEvent(QKeyEvent* e) override;
 
@@ -71,21 +82,17 @@ public:
 
 	template <typename... Vec2>
 		requires (std::is_same_v<Vec2, class Vec2> && ...)
-	void draw_filled_area(const CGAL::IO::Color& color, const Vec2&... vecs);
+	void draw_filled_area(const CGAL::IO::Color& color, const Vec2&... vecs)
+	{
+		if (sizeof...(vecs) == 0)
+			return;
+
+		face_begin(color);
+		for (const auto& vec : {vecs...})
+			base::add_point_in_face(vec2_to_point(vec));
+
+		face_end();
+	}
 
 	void draw_text(const Vec2& point, const std::string& text);
 };
-
-template <typename... Vec2>
-	requires (std::is_same_v<Vec2, class Vec2> && ...)
-void window::draw_filled_area(const CGAL::IO::Color& color, const Vec2&... vecs)
-{
-	if (sizeof...(vecs) == 0)
-		return;
-
-	face_begin(color);
-	for (const auto& vec : {vecs...})
-		base::add_point_in_face(vec2_to_point(vec));
-
-	face_end();
-}
